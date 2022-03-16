@@ -66,7 +66,12 @@ export default {
           performance: true,
           analytics: true,
           remoteConfig: true
-        }
+        },
+        customEnv: false,
+        onFireBaseHosting: false,
+        lazy: false,
+        injectModule: true,
+        terminateDatabasesAfterGenerate: false
       }
     ]
   ],
