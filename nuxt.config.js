@@ -29,7 +29,7 @@ export default {
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
-    
+
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -43,6 +43,34 @@ export default {
 
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
+    [
+      '@nuxtjs/firebase',
+      {
+        config: {
+          apiKey: 'AIzaSyChV-rXrhDGmcBWDWCFy7idSHrnNmJun1U',
+          authDomain: 'bookr-c4524.firebaseapp.com',
+          projectId: 'bookr-c4524',
+          storageBucket: 'bookr-c4524.appspot.com',
+          messagingSenderId: '700315698288',
+          appId: '1:700315698288:web:6761d7f4089a7e162160b5',
+          measurementId: 'G-QBN2BFY66Q'
+        },
+        services: {
+          services: {
+            // Enable all services available. We can delete the ones we don't need
+            auth: true,
+            firestore: true,
+            functions: true,
+            storage: true,
+            database: true,
+            messaging: true,
+            performance: true,
+            analytics: true,
+            remoteConfig: true
+          }
+        }
+      }
+    ]
   ],
 
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify

@@ -9,16 +9,16 @@
         cols="12"
       >
         <h1 class="page__title">
-          <span>fdu</span>//bookr.
+          <span>lol</span>.
         </h1>
         <h4 class="subheading font-weight-light"> 
-          reserve your seat(s) today!
+          Testing!
         </h4>
       </v-col>
       <v-col class="text-center mt-6">
-        <nuxt-link :key="$router.fullPath" to="authentication">
+        <nuxt-link :key="$router.fullPath" to="./">
           <v-btn depressed outlined rounded class="pl-9 pr-9" color="#3b47ec">
-            reserve
+            Test
           </v-btn>
         </nuxt-link>
       </v-col>
@@ -28,7 +28,7 @@
 
 <script>
 export default {
-  name: 'Landing'
+  name: 'Booking'
 }
 </script>
 
