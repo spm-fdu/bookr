@@ -56,18 +56,16 @@ export default {
           measurementId: 'G-QBN2BFY66Q'
         },
         services: {
-          services: {
-            // Enable all services available. We can delete the ones we don't need
-            auth: true,
-            firestore: true,
-            functions: true,
-            storage: true,
-            database: true,
-            messaging: true,
-            performance: true,
-            analytics: true,
-            remoteConfig: true
-          }
+          // Enable all services available. We can delete the ones we don't need
+          auth: true,
+          firestore: true,
+          functions: true,
+          storage: true,
+          database: true,
+          messaging: true,
+          performance: true,
+          analytics: true,
+          remoteConfig: true
         }
       }
     ]
