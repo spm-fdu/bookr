@@ -6,11 +6,11 @@ export default {
     async createUser() {
       try {
         await this.$fire.auth.createUserWithEmailAndPassword(
-          "foo@foo.foo",
-          "test"
+          "spm.fudan@gmail.com",
+          "testing123"
         );
       } catch (e) {
-        handleError(e);
+        console.log(e);
       }
     },
   },

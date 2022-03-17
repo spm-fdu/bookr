@@ -11,9 +11,10 @@
             Home
           </v-btn>
         </nuxt-link>
-        <v-btn @click="createUser()" depressed outlined rounded class="pl-9 pr-9" color="#3b47ec">
-            Register
-          </v-btn>
+        <create-user ref="create_user"></create-user>
+        <v-btn @click="$refs.create_user.createUser()" depressed outlined rounded class="pl-9 pr-9" color="#3b47ec">
+          Register
+        </v-btn>
         <div id="example"></div>
       </v-col>
     </v-row>
@@ -24,18 +25,9 @@
 import CreateUser from "../components/CreateUser.vue";
 export default {
   name: "Authentication",
-  methods: {
-    async createUser() {
-      try {
-        await this.$fire.auth.createUserWithEmailAndPassword(
-          "spm.fudan@gmail.com",
-          "password"
-        );
-      } catch (e) {
-        handleError(e);
-      }
-    },
-  },
+  components: {
+    'create-user': CreateUser
+  }
 };
 </script>
 
