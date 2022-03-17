@@ -6,16 +6,20 @@
         <h4 class="subheading font-weight-light">Testing authentication.</h4>
       </v-col>
       <v-col class="text-center mt-6">
-        <nuxt-link :key="$router.fullPath" to="./">
+        <nuxt-link :key="$router.fullPath" to="authentication">
           <v-btn depressed outlined rounded class="pl-9 pr-9" color="#3b47ec">
-            Home
+            Back to Auth
           </v-btn>
         </nuxt-link>
-        <nuxt-link :key="$router.fullPath" to="sign_up">
-          <v-btn depressed outlined rounded class="pl-9 pr-9" color="#3b47ec">
-            Sign Up
-          </v-btn>
-        </nuxt-link>
+        <form @submit.prevent="createUser()">
+          <div class="form-group">
+            <input type="text" placeholder="email" v-model="email" class="form-control" />
+          </div>
+          <div class="form-group">
+            <input type="password" placeholder="password" v-model="password" class="form-control" />
+          </div>
+          <button type="submit">Submit</button>
+        </form>
       </v-col>
     </v-row>
   </v-container>
@@ -23,7 +27,22 @@
 
 <script>
 export default {
-  name: "Authentication",
+  name: "SignUp",
+  data() {
+    return {
+      email: "",
+      passowrd: "",
+    };
+  },
+  methods: {
+    async createUser() {
+      try {
+        await this.$fire.auth.createUserWithEmailAndPassword(this.email, this.password);
+      } catch (e) {
+        console.log(e);
+      }
+    },
+  },
 };
 </script>
 
