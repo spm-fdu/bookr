@@ -30,8 +30,8 @@ export default {
   name: "SignUp",
   data() {
     return {
-      email: "",
-      passowrd: "",
+      email: '',
+      password: '',
     };
   },
   methods: {
