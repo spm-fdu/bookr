@@ -3,7 +3,7 @@
     elevation="1"
     class="pa-4 rounded justify-center"
     width="500"
-    height="550"
+    height="650"
     max-width="500"
   >
     <v-card-title class="signup__title justify-center font-weight-bold">{{
@@ -43,6 +43,41 @@
       @click="signUp()"
       >signup</v-btn
     >
+
+    <v-spacer class="mb-8"></v-spacer>
+
+    <v-container fluid>
+      <v-row align="center" justify="center">
+        <div id="recaptcha-container"></div>
+      </v-row>
+      <v-spacer class="mb-8"></v-spacer>
+      <v-row align="center" justify="center">
+        <v-col>
+          <div id="sms-code-signup">
+            <v-text-field
+              v-model="credentials.ver_code"
+              :label="labels.ver_code"
+              :rules="[]"
+              outlined
+              :loading="spin"
+              class="ml-16 mr-16"
+              color="#3b47ec"
+            ></v-text-field>
+          </div>
+        </v-col>
+        <v-col>
+          <v-btn
+            depressed
+            class="pl-16 pr-16"
+            @click="this.verifyVeriticationCode()"
+            >Enter</v-btn
+          >
+        </v-col>
+      </v-row>
+    </v-container>
+
+    <v-spacer class="mb-8"></v-spacer>
+
     <v-divider class="signup__short_divider"></v-divider>
 
     <v-btn
@@ -60,6 +95,12 @@
 </template>
 
 <script>
+import {
+  getAuth,
+  RecaptchaVerifier,
+  signInWithPhoneNumber,
+} from "firebase/auth";
+
 export default {
   name: "SignUp",
   data() {
@@ -68,10 +109,12 @@ export default {
       labels: {
         uid: "Email or phone number",
         pwd: "Password",
+        ver_code: "Verification code",
       },
       credentials: {
         uid: "",
         pwd: "",
+        ver_code: "",
       },
       social: [
         {
@@ -122,14 +165,60 @@ export default {
         return true;
       }
     },
-    async signUp() {
-      try {
-        await this.$fire.auth.createUserWithEmailAndPassword(
+    isEmailOrPhoneNumber(value) {
+      let eReg =
+        /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,24}))$/;
+      let pReg = /^\+?([0-9]{2})\)?[-. ]?([0-9]{5})[-. ]?([0-9]{4})$/;
+
+      if (eReg.test(value)) {
+        return "email";
+      } else if (pReg.test(value)) {
+        return "phone_number";
+      }
+      return "none";
+    },
+    verifyVeriticationCode() {
+      console.log("HIIIIIIIIIIIIIIIIIIIIIIIII");
+      const code = this.$self.credentials.ver_code;
+      console.log("HELLOOOOOOOOOOOOOOOOOOOOOOOOOO");
+      console.log(code);
+      confirmationResult
+        .confirm(code)
+        .then((result) => {
+          // User signed in successfully.
+          const user = result.user;
+          console.log(user);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+    signUp() {
+      let res = this.isEmailOrPhoneNumber(this.credentials.uid);
+      if (res == "email") {
+        this.$fire.auth.createUserWithEmailAndPassword(
           this.credentials.uid,
           this.credentials.pwd
         );
-      } catch (e) {
-        console.log(e);
+      } else if (res == "phone_number") {
+        const auth = getAuth();
+        window.recaptchaVerifier = new RecaptchaVerifier(
+          "recaptcha-container",
+          {},
+          auth
+        );
+
+        const phoneNumber = this.credentials.uid;
+        console.log(phoneNumber);
+        const appVerifier = window.recaptchaVerifier;
+
+        signInWithPhoneNumber(auth, phoneNumber, appVerifier)
+          .then((confirmationResult) => {
+            window.confirmationResult = confirmationResult;
+          })
+          .catch((err) => {
+            console.log(err);
+          });
       }
     },
     async signUpThirdParty(i) {
@@ -149,6 +238,8 @@ export default {
             .catch((err) => {
               console.log(err);
             });
+          break;
+        default:
           break;
       }
     },
