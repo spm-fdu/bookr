@@ -9,7 +9,6 @@
       </v-col>
     </v-row>
     </v-container>
-
 </template>
 
 <script>
@@ -20,7 +19,7 @@ export default {
     BookrLogin,
   },
   mounted () {
-    // route guard 
+    // route guard
     this.verifyLoginStatus();
   },
   methods: {

@@ -1,47 +1,22 @@
 <template>
-  <v-container fluid fill-height>
-    <v-row align="center" justify="center">
-      <v-col class="text-center" cols="12">
-        <h1 class="page__title"><span>Auth</span>.</h1>
-        <h4 class="subheading font-weight-light">Testing authentication.</h4>
+  <v-container fluid fill-height class="bookr__signup ml-8 mr-8">
+    <v-row class="text-center justify-center align-center">
+      <v-col cols="7">
+        <img src="../static/signup.svg" :style="`pointer-events:none`"/>
       </v-col>
-      <v-col class="text-center mt-6">
-        <nuxt-link :key="$router.fullPath" to="authentication">
-          <v-btn depressed outlined rounded class="pl-9 pr-9" color="#3b47ec">
-            Back to Auth
-          </v-btn>
-        </nuxt-link>
-        <form @submit.prevent="createUser()">
-          <div class="form-group">
-            <input type="text" placeholder="email" v-model="email" class="form-control" />
-          </div>
-          <div class="form-group">
-            <input type="password" placeholder="password" v-model="password" class="form-control" />
-          </div>
-          <button type="submit">Submit</button>
-        </form>
+      <v-col cols="5" >
+        <bookr-sign-up></bookr-sign-up>
       </v-col>
     </v-row>
-  </v-container>
+    </v-container>
 </template>
 
 <script>
+import BookrSignUp from '../components/BookrSignUp.vue'
+
 export default {
-  name: "SignUp",
-  data() {
-    return {
-      email: '',
-      password: '',
-    };
-  },
-  methods: {
-    async createUser() {
-      try {
-        await this.$fire.auth.createUserWithEmailAndPassword(this.email, this.password);
-      } catch (e) {
-        console.log(e);
-      }
-    },
+  components: {
+    BookrSignUp
   },
 };
 </script>

@@ -16,7 +16,7 @@
         </h4>
       </v-col>
       <v-col class="text-center mt-6">
-        <nuxt-link :key="$router.fullPath" to="/booking">
+        <nuxt-link :key="$router.fullPath" to="/signup">
           <v-btn depressed outlined rounded class="pl-9 pr-9" color="#3b47ec">
             reserve
           </v-btn>
