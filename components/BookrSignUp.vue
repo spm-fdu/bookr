@@ -52,7 +52,7 @@
       class="ml-4 mr-4"
       v-for="(i, index) in social"
       :key="index"
-      @click="signUpGoogle()"
+      @click="signUpThirdParty(index)"
     >
       <v-icon>{{ i.icon }}</v-icon>
     </v-btn>
@@ -132,20 +132,25 @@ export default {
         console.log(e);
       }
     },
-    async signUpGoogle() {
-      const provider = new this.$fireModule.auth.GoogleAuthProvider();
-      this.$fire
-        .auth
-        .signInWithPopup(provider)
-        .then((result) => {
-          let token = result.credential.accessToken;
-          let user = result.user;
-            console.log(token)
-            console.log(user)
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+    async signUpThirdParty(i) {
+      switch (i) {
+        case 0:
+          break;
+        case 1:
+          const provider = new this.$fireModule.auth.GoogleAuthProvider();
+          this.$fire.auth
+            .signInWithPopup(provider)
+            .then((result) => {
+              let token = result.credential.accessToken;
+              let user = result.user;
+              console.log(token);
+              console.log(user);
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+          break;
+      }
     },
   },
 };
