@@ -46,16 +46,14 @@
       <template v-slot:default="dialog">
         <v-card>
           <v-toolbar dark>Forgot password?</v-toolbar>
-          <!--<v-card-text>
-            <div class="text-h2 pa-12">Hello world!</div>
-          </v-card-text>-->
+
           <v-spacer class="mb-2"></v-spacer>
 
           <v-col align="center">
             <v-text-field
               v-model="email_verification.uid"
               :label="'Email'"
-              :rules="[required, validateEmail]"
+              :rules="[required_send_password_email, validateEmail]"
               outlined
               :loading="spin"
               class="ml-16 mr-16"
@@ -64,6 +62,7 @@
             <v-btn
               depressed
               class="pl-16 pr-16"
+              :disabled="disabled.email_send_password"
               @click="sendPasswordReset(email_verification.uid)"
               >Send</v-btn
             >
@@ -174,6 +173,7 @@ export default {
         both: true,
         email: true,
         pwd: true,
+        email_send_password: true,
       },
       showPwd: false,
       spin: false,
@@ -186,6 +186,15 @@ export default {
         return "Required";
       } else {
         this.disabled.both = false;
+        return true;
+      }
+    },
+    required_send_password_email(value) {
+      if (!value) {
+        this.disabled.email_send_password = true;
+        return "Required";
+      } else {
+        this.disabled.email_send_password = false;
         return true;
       }
     },
@@ -216,10 +225,10 @@ export default {
         /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,24}))$/;
 
       if (eReg.test(value)) {
-        this.disabled.email = false;
+        this.disabled.email_send_password = false;
         return true;
       } else {
-        this.disabled.email = true;
+        this.disabled.email_send_password = true;
         return "Please enter a valid email address";
       }
     },
