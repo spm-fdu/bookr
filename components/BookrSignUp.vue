@@ -35,6 +35,10 @@
       @click:append="showPwd = !showPwd"
     ></v-text-field>
     <!-- <v-card-text class="signup__reset ma-0 pr-16 pa-0 text-right" @click="resetPassword()" ><a class="text-overline">Forget password?</a></v-card-text> -->
+    <v-spacer class="mb-2"></v-spacer>
+    <v-btn depressed>
+      Forgot password?
+    </v-btn>
     <v-spacer class="mb-8"></v-spacer>
     <v-btn
       depressed
