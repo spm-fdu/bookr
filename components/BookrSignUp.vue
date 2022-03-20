@@ -36,9 +36,9 @@
     ></v-text-field>
     <!-- <v-card-text class="signup__reset ma-0 pr-16 pa-0 text-right" @click="resetPassword()" ><a class="text-overline">Forget password?</a></v-card-text> -->
     <v-spacer class="mb-2"></v-spacer>
-    <v-btn depressed>
-      Forgot password?
-    </v-btn>
+    <v-btn plain class="pl-16 pr-16" @click="sendPasswordReset()"
+      >Forgot password?</v-btn
+    >
     <v-spacer class="mb-8"></v-spacer>
     <v-btn
       depressed
@@ -103,6 +103,7 @@ import {
   getAuth,
   RecaptchaVerifier,
   signInWithPhoneNumber,
+  sendPasswordResetEmail,
 } from "firebase/auth";
 
 export default {
@@ -182,9 +183,7 @@ export default {
       return "none";
     },
     verifyVeriticationCode() {
-      console.log("HIIIIIIIIIIIIIIIIIIIIIIIII");
       const code = this.$self.credentials.ver_code;
-      console.log("HELLOOOOOOOOOOOOOOOOOOOOOOOOOO");
       console.log(code);
       confirmationResult
         .confirm(code)
@@ -246,6 +245,19 @@ export default {
         default:
           break;
       }
+    },
+    sendPasswordReset() {
+      const auth = getAuth();
+      sendPasswordResetEmail(auth, "spm.fudan@gmail.com")
+        .then(() => {
+          console.log("Password reset email sent");
+        })
+        .catch((err) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          console.log(errorCode);
+          console.log(errorMessage);
+        });
     },
   },
 };
