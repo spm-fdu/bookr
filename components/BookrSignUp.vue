@@ -36,10 +36,48 @@
     ></v-text-field>
     <!-- <v-card-text class="signup__reset ma-0 pr-16 pa-0 text-right" @click="resetPassword()" ><a class="text-overline">Forget password?</a></v-card-text> -->
     <v-spacer class="mb-2"></v-spacer>
-    <v-btn plain class="pl-16 pr-16" @click="sendPasswordReset()"
-      >Forgot password?</v-btn
-    >
+
+    <v-dialog transition="dialog-bottom-transition" max-width="600">
+      <template v-slot:activator="{ on, attrs }">
+        <v-btn plain class="pl-16 pr-16" v-bind="attrs" v-on="on"
+          >Forgot password?</v-btn
+        >
+      </template>
+      <template v-slot:default="dialog">
+        <v-card>
+          <v-toolbar dark>Forgot password?</v-toolbar>
+          <!--<v-card-text>
+            <div class="text-h2 pa-12">Hello world!</div>
+          </v-card-text>-->
+          <v-spacer class="mb-2"></v-spacer>
+
+          <v-col align="center">
+            <v-text-field
+              v-model="email_verification.uid"
+              :label="'Email'"
+              :rules="[required, validateEmail]"
+              outlined
+              :loading="spin"
+              class="ml-16 mr-16"
+              color="#3b47ec"
+            ></v-text-field>
+            <v-btn
+              depressed
+              class="pl-16 pr-16"
+              @click="sendPasswordReset(email_verification.uid)"
+              >Send</v-btn
+            >
+          </v-col>
+
+          <v-card-actions class="justify-end">
+            <v-btn text @click="dialog.value = false">Close</v-btn>
+          </v-card-actions>
+        </v-card>
+      </template>
+    </v-dialog>
+
     <v-spacer class="mb-8"></v-spacer>
+
     <v-btn
       depressed
       class="pl-16 pr-16"
@@ -121,6 +159,9 @@ export default {
         pwd: "",
         ver_code: "",
       },
+      email_verification: {
+        uid: "",
+      },
       social: [
         {
           icon: "mdi-facebook",
@@ -168,6 +209,18 @@ export default {
       } else {
         this.disabled.pwd = false;
         return true;
+      }
+    },
+    validateEmail(value) {
+      let eReg =
+        /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,24}))$/;
+
+      if (eReg.test(value)) {
+        this.disabled.email = false;
+        return true;
+      } else {
+        this.disabled.email = true;
+        return "Please enter a valid email address";
       }
     },
     isEmailOrPhoneNumber(value) {
@@ -246,17 +299,14 @@ export default {
           break;
       }
     },
-    sendPasswordReset() {
+    sendPasswordReset(email) {
       const auth = getAuth();
-      sendPasswordResetEmail(auth, "spm.fudan@gmail.com")
+      sendPasswordResetEmail(auth, email)
         .then(() => {
           console.log("Password reset email sent");
         })
         .catch((err) => {
-          const errorCode = error.code;
-          const errorMessage = error.message;
-          console.log(errorCode);
-          console.log(errorMessage);
+          console.log(err);
         });
     },
   },
