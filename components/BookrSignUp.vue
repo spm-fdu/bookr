@@ -21,21 +21,53 @@
       class="ml-16 mr-16"
       color="#3b47ec"
     ></v-text-field>
-    <v-spacer></v-spacer>
-    <v-text-field
-      v-model="credentials.pwd"
-      :label="labels.pwd"
-      :append-icon="showPwd ? 'mdi-eye' : 'mdi-eye-off'"
-      :type="showPwd ? 'text' : 'password'"
-      :rules="[required, validatePasswordLength]"
-      outlined
-      :loading="spin"
-      class="ml-16 mr-16"
-      color="#3b47ec"
-      @click:append="showPwd = !showPwd"
-    ></v-text-field>
+
     <!-- <v-card-text class="signup__reset ma-0 pr-16 pa-0 text-right" @click="resetPassword()" ><a class="text-overline">Forget password?</a></v-card-text> -->
     <v-spacer class="mb-2"></v-spacer>
+
+    <v-dialog transition="dialog-bottom-transition" max-width="600">
+      <template v-slot:activator="{ on, attrs }">
+        <v-btn depressed class="pl-16 pr-16" v-bind="attrs" v-on="on"
+          >Next</v-btn
+        >
+      </template>
+      <template v-slot:default="dialog">
+        <v-card>
+          <v-toolbar dark>Sign up</v-toolbar>
+
+          <v-spacer class="mb-2"></v-spacer>
+          
+          <v-col align="center">
+            <v-text-field
+              v-model="credentials.pwd"
+              :label="labels.pwd"
+              :append-icon="showPwd ? 'mdi-eye' : 'mdi-eye-off'"
+              :type="showPwd ? 'text' : 'password'"
+              :rules="[required, validatePasswordLength]"
+              outlined
+              :loading="spin"
+              class="ml-16 mr-16"
+              color="#3b47ec"
+              @click:append="showPwd = !showPwd"
+            ></v-text-field>
+
+            <v-btn
+              depressed
+              class="pl-16 pr-16"
+              :disabled="disabled.both || disabled.email || disabled.pwd"
+              @click="signUp()"
+              >Signup</v-btn
+            >
+          </v-col>
+
+          <v-card-actions class="justify-end">
+            <v-btn text @click="dialog.value = false">Close</v-btn>
+          </v-card-actions>
+        </v-card>
+      </template>
+    </v-dialog>
+
+    <v-spacer class="mb-8"></v-spacer>
 
     <v-dialog transition="dialog-bottom-transition" max-width="600">
       <template v-slot:activator="{ on, attrs }">
@@ -74,18 +106,6 @@
         </v-card>
       </template>
     </v-dialog>
-
-    <v-spacer class="mb-8"></v-spacer>
-
-    <v-btn
-      depressed
-      class="pl-16 pr-16"
-      :disabled="disabled.both || disabled.email || disabled.pwd"
-      @click="signUp()"
-      >signup</v-btn
-    >
-
-    <v-spacer class="mb-8"></v-spacer>
 
     <v-container fluid>
       <v-row align="center" justify="center">
