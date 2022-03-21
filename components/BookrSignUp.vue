@@ -32,11 +32,11 @@
         >
       </template>
       <template v-slot:default="dialog">
-        <v-card>
-          <v-toolbar dark>Sign up</v-toolbar>
+        <v-card v-if="false">
+          <v-toolbar dark>Sign up with email</v-toolbar>
 
           <v-spacer class="mb-2"></v-spacer>
-          
+
           <v-col align="center">
             <v-text-field
               v-model="credentials.pwd"
@@ -51,12 +51,53 @@
               @click:append="showPwd = !showPwd"
             ></v-text-field>
 
+            <v-spacer class="mb-6"></v-spacer>
+
             <v-btn
               depressed
               class="pl-16 pr-16"
               :disabled="disabled.both || disabled.email || disabled.pwd"
               @click="signUp()"
               >Signup</v-btn
+            >
+          </v-col>
+
+          <v-card-actions class="justify-end">
+            <v-btn text @click="dialog.value = false">Close</v-btn>
+          </v-card-actions>
+        </v-card>
+        <v-card v-if="true">
+          <v-toolbar dark>Sign up with phone number</v-toolbar>
+
+          <v-spacer class="mb-2"></v-spacer>
+
+          <v-col align="center">
+            <v-btn depressed class="pl-16 pr-16" @click="showCaptcha()"
+              >Get Captcha Code</v-btn
+            >
+
+            <div id="recaptcha-container"></div>
+
+            <v-spacer class="mb-6"></v-spacer>
+
+            <div id="sms-code-signup">
+              <v-text-field
+                v-model="credentials.ver_code"
+                :label="labels.ver_code"
+                :rules="[]"
+                outlined
+                :loading="spin"
+                class="ml-16 mr-16"
+                color="#3b47ec"
+              ></v-text-field>
+            </div>
+          </v-col>
+          <v-col>
+            <v-btn
+              depressed
+              class="pl-16 pr-16"
+              @click="this.verifyVeriticationCode()"
+              >Enter</v-btn
             >
           </v-col>
 
@@ -106,38 +147,6 @@
         </v-card>
       </template>
     </v-dialog>
-
-    <v-container fluid>
-      <v-row align="center" justify="center">
-        <div id="recaptcha-container"></div>
-      </v-row>
-      <v-spacer class="mb-8"></v-spacer>
-      <v-row align="center" justify="center">
-        <v-col>
-          <div id="sms-code-signup">
-            <v-text-field
-              v-model="credentials.ver_code"
-              :label="labels.ver_code"
-              :rules="[]"
-              outlined
-              :loading="spin"
-              class="ml-16 mr-16"
-              color="#3b47ec"
-            ></v-text-field>
-          </div>
-        </v-col>
-        <v-col>
-          <v-btn
-            depressed
-            class="pl-16 pr-16"
-            @click="this.verifyVeriticationCode()"
-            >Enter</v-btn
-          >
-        </v-col>
-      </v-row>
-    </v-container>
-
-    <v-spacer class="mb-8"></v-spacer>
 
     <v-divider class="signup__short_divider"></v-divider>
 
@@ -278,33 +287,25 @@ export default {
           console.log(err);
         });
     },
-    signUp() {
-      let res = this.isEmailOrPhoneNumber(this.credentials.uid);
-      if (res == "email") {
-        this.$fire.auth.createUserWithEmailAndPassword(
-          this.credentials.uid,
-          this.credentials.pwd
-        );
-      } else if (res == "phone_number") {
-        const auth = getAuth();
-        window.recaptchaVerifier = new RecaptchaVerifier(
-          "recaptcha-container",
-          {},
-          auth
-        );
+    signUpEmail() {
+      this.$fire.auth.createUserWithEmailAndPassword(
+        this.credentials.uid,
+        this.credentials.pwd
+      );
+    },
+    signUpMobile() {
+      const auth = getAuth();
+      const phoneNumber = this.credentials.uid;
+      console.log(phoneNumber);
+      const appVerifier = window.recaptchaVerifier;
 
-        const phoneNumber = this.credentials.uid;
-        console.log(phoneNumber);
-        const appVerifier = window.recaptchaVerifier;
-
-        signInWithPhoneNumber(auth, phoneNumber, appVerifier)
-          .then((confirmationResult) => {
-            window.confirmationResult = confirmationResult;
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-      }
+      signInWithPhoneNumber(auth, phoneNumber, appVerifier)
+        .then((confirmationResult) => {
+          window.confirmationResult = confirmationResult;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
     async signUpThirdParty(i) {
       switch (i) {
@@ -327,6 +328,14 @@ export default {
         default:
           break;
       }
+    },
+    showCaptcha() {
+      const auth = getAuth();
+      window.recaptchaVerifier = new RecaptchaVerifier(
+        "recaptcha-container",
+        {},
+        auth
+      );
     },
     sendPasswordReset(email) {
       const auth = getAuth();
