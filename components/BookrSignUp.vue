@@ -58,7 +58,7 @@
               class="pl-16 pr-16"
               :disabled="disabled.both || disabled.email || disabled.pwd"
               @click="signUp()"
-              >Signup</v-btn
+              >Sign Up</v-btn
             >
           </v-col>
 
@@ -72,32 +72,36 @@
           <v-spacer class="mb-2"></v-spacer>
 
           <v-col align="center">
-            <v-btn depressed class="pl-16 pr-16" @click="showCaptcha()"
-              >Get Captcha Code</v-btn
+            <v-btn
+              depressed
+              class="pl-16 pr-16"
+              @click="
+                sendPhoneVerificationCode();
+                showCaptcha();
+              "
+              >Send code</v-btn
             >
+
+            <v-spacer class="mb-6"></v-spacer>
 
             <div id="recaptcha-container"></div>
 
             <v-spacer class="mb-6"></v-spacer>
 
-            <div id="sms-code-signup">
-              <v-text-field
-                v-model="credentials.ver_code"
-                :label="labels.ver_code"
-                :rules="[]"
-                outlined
-                :loading="spin"
-                class="ml-16 mr-16"
-                color="#3b47ec"
-              ></v-text-field>
-            </div>
-          </v-col>
-          <v-col>
-            <v-btn
-              depressed
-              class="pl-16 pr-16"
-              @click="this.verifyVeriticationCode()"
-              >Enter</v-btn
+            <v-text-field
+              v-model="credentials.ver_code"
+              :label="labels.ver_code"
+              :rules="[]"
+              outlined
+              :loading="spin"
+              class="ml-16 mr-16"
+              color="#3b47ec"
+            ></v-text-field>
+
+            <v-spacer class="mb-6"></v-spacer>
+
+            <v-btn depressed class="pl-16 pr-16" @click="signUpMobile()"
+              >Sign Up</v-btn
             >
           </v-col>
 
@@ -273,27 +277,13 @@ export default {
       }
       return "none";
     },
-    verifyVeriticationCode() {
-      const code = this.$self.credentials.ver_code;
-      console.log(code);
-      confirmationResult
-        .confirm(code)
-        .then((result) => {
-          // User signed in successfully.
-          const user = result.user;
-          console.log(user);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    },
     signUpEmail() {
       this.$fire.auth.createUserWithEmailAndPassword(
         this.credentials.uid,
         this.credentials.pwd
       );
     },
-    signUpMobile() {
+    sendPhoneVerificationCode() {
       const auth = getAuth();
       const phoneNumber = this.credentials.uid;
       console.log(phoneNumber);
@@ -302,6 +292,20 @@ export default {
       signInWithPhoneNumber(auth, phoneNumber, appVerifier)
         .then((confirmationResult) => {
           window.confirmationResult = confirmationResult;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+    signUpMobile() {
+      const code = this.$self.credentials.ver_code;
+      console.log(code);
+      confirmationResult
+        .confirm(code)
+        .then((result) => {
+          // User signed in successfully.
+          const user = result.user;
+          console.log(user);
         })
         .catch((err) => {
           console.log(err);
