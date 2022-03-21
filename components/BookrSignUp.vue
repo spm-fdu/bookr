@@ -76,8 +76,8 @@
               depressed
               class="pl-16 pr-16"
               @click="
-                sendPhoneVerificationCode();
                 showCaptcha();
+                sendPhoneVerificationCode();
               "
               >Send code</v-btn
             >
@@ -283,7 +283,7 @@ export default {
         this.credentials.pwd
       );
     },
-    sendPhoneVerificationCode() {
+    async sendPhoneVerificationCode() {
       const auth = getAuth();
       const phoneNumber = this.credentials.uid;
       console.log(phoneNumber);
