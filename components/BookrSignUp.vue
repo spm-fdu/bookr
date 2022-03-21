@@ -27,12 +27,17 @@
 
     <v-dialog transition="dialog-bottom-transition" max-width="600">
       <template v-slot:activator="{ on, attrs }">
-        <v-btn depressed class="pl-16 pr-16" v-bind="attrs" v-on="on"
+        <v-btn
+          depressed
+          class="pl-16 pr-16"
+          v-bind="attrs"
+          v-on="on"
+          @click="standardLoginType()"
           >Next</v-btn
         >
       </template>
       <template v-slot:default="dialog">
-        <v-card v-if="false">
+        <v-card v-if="std_login_type.email">
           <v-toolbar dark>Sign up with email</v-toolbar>
 
           <v-spacer class="mb-2"></v-spacer>
@@ -66,7 +71,7 @@
             <v-btn text @click="dialog.value = false">Close</v-btn>
           </v-card-actions>
         </v-card>
-        <v-card v-if="true">
+        <v-card v-if="std_login_type.phone">
           <v-toolbar dark>Sign up with phone number</v-toolbar>
 
           <v-spacer class="mb-2"></v-spacer>
@@ -207,6 +212,10 @@ export default {
         email: true,
         pwd: true,
         email_send_password: true,
+      },
+      std_login_type: {
+        email: false,
+        phone: false,
       },
       showPwd: false,
       spin: false,
@@ -350,6 +359,16 @@ export default {
         .catch((err) => {
           console.log(err);
         });
+    },
+    standardLoginType() {
+      let result = this.isEmailOrPhoneNumber(this.credentials.uid);
+      if (result == "email") {
+        this.std_login_type.email = true;
+        this.std_login_type.phone = false;
+      } else if (result == "phone_number") {
+        this.std_login_type.email = false;
+        this.std_login_type.phone = true;
+      }
     },
   },
 };
