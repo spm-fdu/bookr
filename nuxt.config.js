@@ -1,4 +1,6 @@
 import colors from 'vuetify/es5/util/colors'
+import dotenv from "dotenv";
+dotenv.config();
 
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
@@ -46,13 +48,13 @@ export default {
       '@nuxtjs/firebase',
       {
         config: {
-          apiKey: 'AIzaSyChV-rXrhDGmcBWDWCFy7idSHrnNmJun1U',
-          authDomain: 'bookr-c4524.firebaseapp.com',
-          projectId: 'bookr-c4524',
-          storageBucket: 'bookr-c4524.appspot.com',
-          messagingSenderId: '700315698288',
-          appId: '1:700315698288:web:6761d7f4089a7e162160b5',
-          measurementId: 'G-QBN2BFY66Q'
+          apiKey: process.env.FIREBASE_API_KEY || '',
+          authDomain: process.env.FIREBASE_AUTH_DOMAIN || '',
+          projectId: process.env.FIREBASE_PROJECT_ID || '',
+          storageBucket: process.env.FIREBASE_STORAGE_BUCKET || '',
+          messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID || '',
+          appId: process.env.FIREBASE_APP_ID || '',
+          measurementId: process.env.FIREBASE_MEASUREMENT_ID || ''
         },
         services: {
           // Enable all services available. We can delete the ones we don't need
@@ -72,7 +74,7 @@ export default {
         injectModule: true,
         terminateDatabasesAfterGenerate: false
       }
-    ]
+    ],
   ],
 
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
