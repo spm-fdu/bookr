@@ -30,13 +30,10 @@
 
 <script>
 import { mapGetters } from 'vuex';
-import BookrUnclickableButton from '../components/BookrUnclickableButton.vue'
 
 export default {
   name: 'BookrSeatBook',
-  components: {
-    BookrUnclickableButton
-  },
+  components: {},
   data () {
     return {
       disable: true,

@@ -24,7 +24,14 @@
         color="#3b47ec"
         @click:append="showPwd = !showPwd"
         ></v-text-field>
-      <v-card-text class="login__reset ma-0 pr-16 pa-0 text-right" @click="resetPassword()" ><a class="text-overline">Forget password?</a></v-card-text>
+      <v-row>
+        <v-col>
+          <v-card-text class="login__reset ma-0 pl-16 pa-0 text-left"><nuxt-link to="signup" class="text-overline text-decoration-none">new user?</nuxt-link></v-card-text>
+        </v-col>
+        <v-col>
+          <v-card-text class="login__reset ma-0 pr-16 pa-0 text-right"><nuxt-link to="reset" class="text-overline text-decoration-none">Forget password?</nuxt-link></v-card-text>
+        </v-col>
+      </v-row>
       <v-spacer class="mb-8"></v-spacer>
       <v-btn depressed class="pl-16 pr-16" :disabled="disabled.both || disabled.email || disabled.pwd" @click="login()">login</v-btn>
       <v-divider class="login__short_divider "></v-divider>
