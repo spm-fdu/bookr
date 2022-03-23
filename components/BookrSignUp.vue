@@ -201,9 +201,6 @@ export default {
       },
       social: [
         {
-          icon: "mdi-facebook",
-        },
-        {
           icon: "mdi-google",
         },
       ],
@@ -323,8 +320,6 @@ export default {
     async signUpThirdParty(i) {
       switch (i) {
         case 0:
-          break;
-        case 1:
           const provider = new this.$fireModule.auth.GoogleAuthProvider();
           this.$fire.auth
             .signInWithPopup(provider)
