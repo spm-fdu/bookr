@@ -32,6 +32,7 @@
           class="pl-16 pr-16"
           v-bind="attrs"
           v-on="on"
+          :disabled="disabled.email"
           @click="standardLoginType()"
           >Next</v-btn
         >
