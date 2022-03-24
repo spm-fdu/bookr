@@ -304,10 +304,10 @@ export default {
           console.log(err);
         });
     },
-    signUpMobile() {
-      const code = this.$self.credentials.ver_code;
+    async signUpMobile() {
+      const code = this.credentials.ver_code;
       console.log(code);
-      confirmationResult
+      window.confirmationResult
         .confirm(code)
         .then((result) => {
           // User signed in successfully.
