@@ -285,10 +285,23 @@ export default {
       return "none";
     },
     signUpEmail() {
-      this.$fire.auth.createUserWithEmailAndPassword(
-        this.credentials.uid,
-        this.credentials.pwd
-      );
+      this.$fire.auth
+        .createUserWithEmailAndPassword(
+          this.credentials.uid,
+          this.credentials.pwd
+        )
+        .then((result) => {
+          const user = result.user;
+          console.log(user);
+
+          this.$fire.firestore
+            .collection("users")
+            .doc(user.uid)
+            .set({ uid: user.uid });
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
     async sendPhoneVerificationCode() {
       const auth = getAuth();
@@ -310,9 +323,10 @@ export default {
       window.confirmationResult
         .confirm(code)
         .then((result) => {
-          // User signed in successfully.
           const user = result.user;
           console.log(user);
+
+          this.$fire.firestore.collection("users").doc(user.uid).set({});
         })
         .catch((err) => {
           console.log(err);
@@ -329,6 +343,8 @@ export default {
               let user = result.user;
               console.log(token);
               console.log(user);
+
+              this.$fire.firestore.collection("users").doc(user.uid).set({});
             })
             .catch((err) => {
               console.log(err);
