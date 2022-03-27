@@ -63,7 +63,7 @@
               depressed
               class="pl-16 pr-16"
               :disabled="disabled.both || disabled.email || disabled.pwd"
-              @click="signUp()"
+              @click="signUpEmail()"
               >Sign Up</v-btn
             >
           </v-col>
