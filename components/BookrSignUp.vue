@@ -32,6 +32,7 @@
           class="pl-16 pr-16"
           v-bind="attrs"
           v-on="on"
+          :disabled="disabled.email"
           @click="standardLoginType()"
           >Next</v-btn
         >
@@ -303,10 +304,10 @@ export default {
           console.log(err);
         });
     },
-    signUpMobile() {
-      const code = this.$self.credentials.ver_code;
+    async signUpMobile() {
+      const code = this.credentials.ver_code;
       console.log(code);
-      confirmationResult
+      window.confirmationResult
         .confirm(code)
         .then((result) => {
           // User signed in successfully.
