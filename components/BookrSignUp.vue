@@ -294,12 +294,9 @@ export default {
           const user = result.user;
           console.log(user);
 
-          this.$fire.firestore
-            .collection("users")
-            .doc(user.uid)
-            .set({ uid: user.uid });
-          
-          this.$store.commit('setDatabaseUid', user.uid);
+          this.$fire.firestore.collection("users").doc(user.uid).set({});
+
+          this.$store.commit("setDatabaseUid", user.uid);
 
           console.log("Database uid is: ", this.$store.state.databaseUid);
         })
@@ -331,6 +328,10 @@ export default {
           console.log(user);
 
           this.$fire.firestore.collection("users").doc(user.uid).set({});
+
+          this.$store.commit("setDatabaseUid", user.uid);
+
+          console.log("Database uid is: ", this.$store.state.databaseUid);
         })
         .catch((err) => {
           console.log(err);
@@ -349,6 +350,10 @@ export default {
               console.log(user);
 
               this.$fire.firestore.collection("users").doc(user.uid).set({});
+
+              this.$store.commit("setDatabaseUid", user.uid);
+
+              console.log("Database uid is: ", this.$store.state.databaseUid);
             })
             .catch((err) => {
               console.log(err);
