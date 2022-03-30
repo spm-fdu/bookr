@@ -159,10 +159,14 @@ export default {
     },
     sendBookingsToDatabase() {
       console.log("Database uid: ", this.databaseUid);
-      console.log(this.bookings);
       console.log(typeof this.bookings);
+      console.log(this.bookings);
       for (let key in this.bookings) {
-        console.log(key, this.bookings[key]);
+        for (const separateSlot of this.bookings[key]) {
+          console.log(separateSlot);
+          let arr = separateSlot.split("-");
+          console.log(arr);
+        }
       }
 
       this.$fire.firestore
