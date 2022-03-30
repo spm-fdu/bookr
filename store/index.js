@@ -51,7 +51,7 @@ export const state = () => ({
   week: [],
   timeslots: {}, // [],
   test: {},
-  databaseUid
+  databaseUid: ''
 })
 
 export const getters = {
