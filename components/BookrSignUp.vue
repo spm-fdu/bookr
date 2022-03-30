@@ -298,6 +298,10 @@ export default {
             .collection("users")
             .doc(user.uid)
             .set({ uid: user.uid });
+          
+          this.$store.commit('setDatabaseUid', user.uid);
+
+          console.log("Database uid is: ", this.$store.state.databaseUid);
         })
         .catch((err) => {
           console.log(err);

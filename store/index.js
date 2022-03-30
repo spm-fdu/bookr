@@ -51,6 +51,7 @@ export const state = () => ({
   week: [],
   timeslots: {}, // [],
   test: {},
+  databaseUid
 })
 
 export const getters = {
@@ -130,6 +131,9 @@ export const mutations = {
   },
   setWeek (state, week) {
     state.week = week;
+  },
+  setDatabaseUid(state, uid) {
+    state.databaseUid = uid;
   }
 }
 export const strict = false
