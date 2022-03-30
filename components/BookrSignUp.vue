@@ -299,6 +299,8 @@ export default {
           this.$store.commit("setDatabaseUid", user.uid);
 
           console.log("Database uid is: ", this.$store.state.databaseUid);
+
+          this.$router.push('/booking');
         })
         .catch((err) => {
           console.log(err);
@@ -332,6 +334,8 @@ export default {
           this.$store.commit("setDatabaseUid", user.uid);
 
           console.log("Database uid is: ", this.$store.state.databaseUid);
+
+          this.$router.push('/booking');
         })
         .catch((err) => {
           console.log(err);
@@ -354,6 +358,8 @@ export default {
               this.$store.commit("setDatabaseUid", user.uid);
 
               console.log("Database uid is: ", this.$store.state.databaseUid);
+
+              this.$router.push('/booking');
             })
             .catch((err) => {
               console.log(err);

@@ -62,6 +62,7 @@ export default {
     return {
       disable: true,
       colors: ["#f2c627", "#ff7530", "#63eb4b", "#ff30c8", "#ff2b56"],
+      databaseUid: this.$store.state.databaseUid,
     };
   },
   computed: {
@@ -157,6 +158,7 @@ export default {
       console.log(this.$store.state.stepper);
     },
     sendBookingsToDatabase() {
+      console.log("Database uid: ", this.databaseUid);
       console.log(this.bookings);
       console.log(typeof this.bookings);
       for (let key in this.bookings) {
@@ -164,9 +166,11 @@ export default {
       }
 
       this.$fire.firestore
-            .collection("users")
-            .doc("user_uid_goes_here")
-            .collection("bookings").doc().set({});
+        .collection("users")
+        .doc(this.databaseUid)
+        .collection("bookings")
+        .doc()
+        .set({});
     },
   },
 };
