@@ -1,6 +1,12 @@
 import Vue from "vue"
 
 export const state = () => ({
+  persisted: {
+    fname: '',
+    lname: '',
+    email: '',
+    authenticated: false,
+  },
   counter: 0,
   stepper: 1,
   history: [],
@@ -68,7 +74,27 @@ export const getters = {
   }
 }
 
+export const actions = {
+  persist({ commit }, payload) {
+    commit('SET_PERSIST', payload)
+  },
+  clearPersist({ commit }, _) {
+    commit('CLEAR_PERSIST', _)
+  }
+}
+
 export const mutations = {
+  SET_PERSIST (state, payload) {
+    state.persisted = payload;
+  },
+  CLEAR_PERSIST (state, _) {
+    state.persisted = {
+      fname: '',
+      lname: '',
+      email: '',
+      authenticated: false,
+    }
+  },
   updateHistory (state, mode) { 
     state.counter += 1; 
     state.history.push({

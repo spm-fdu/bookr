@@ -2,6 +2,7 @@
   <v-app>
     <v-main>
         <!-- <v-app-bar-nav-icon></v-app-bar-nav-icon> -->
+        <PageHeader />
       <!-- <v-container> -->
         <Nuxt keep-alive :keep-alive-props="{ max: 5 }"/>
         <PageFooter />
@@ -13,11 +14,13 @@
 
 <script>
 import PageFooter from '../components/PageFooter.vue'
+import PageHeader from '../components/PageHeader.vue'
 
 export default {
   name: 'DefaultLayout',
   components: {
-    PageFooter
+    PageFooter, 
+    PageHeader
   },
   data () {
     return {
@@ -46,7 +49,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  html {
+  html * {
     background-color: white;
   }
   body {

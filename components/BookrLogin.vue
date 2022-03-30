@@ -43,8 +43,13 @@
 </template>
 
 <script>
-import { GoogleAuthProvider } from 'firebase/auth'
-const provider = new GoogleAuthProvider();
+// import { GoogleAuthProvider } from 'firebase/auth'
+// const provider = new GoogleAuthProvider();
+
+// import { getAuth, setPersistence, signInWithEmailAndPassword, browserSessionPersistence } from "firebase/auth";
+
+import { mapActions, mapState } from 'vuex';
+
 
 export default {
   name: 'Login',
@@ -77,7 +82,16 @@ export default {
       
     }
   },
+  computed: {
+    // ...mapState(['persisted'])
+  },
+  // mounted() {
+  //   if (this.persisted !== null) {
+  //     this.
+  //   }
+  // },
   methods: {
+    ...mapActions(['persist']),
     required (value) {
       if (!value) {
         this.disabled.both = true;
@@ -108,17 +122,31 @@ export default {
         return true
       }
     },
-    async login () {
-      try {
-        this.spin = true; 
-        await this.$fire.auth.signInWithEmailAndPassword(this.credentials.uid, this.credentials.pwd);
-        
-        // when successful, reroute to dashboard
-        this.$router.push('/dashboard');
-      } catch (e) {
-        this.handleLoginError(true);
-        return
-      }
+    login () {
+      this.spin = true; 
+      // set persistence on auth; requires explicit sign out or token expiration 
+      this.$fire.auth.setPersistence(this.$fireModule.auth.Auth.Persistence.LOCAL).then(() => {
+        this.$fire.auth.onAuthStateChanged((user) => {
+          if (user) {
+            // if login, retrieve name 
+            let displayName = user._delegate.displayName.split(' ');
+            const userInfo = {
+              fname: displayName[0],
+              lname: displayName[1],
+              email: user._delegate.email,
+              authenticated: true,
+            }
+            this.persist(userInfo);
+            
+            // reroute
+            this.$router.push('/dashboard');
+          } else {
+            return this.$fire.auth.signInWithEmailAndPassword(this.credentials.uid, this.credentials.pwd).catch((e) => {
+              this.labels.pwd = "The credentials you provided doesn't match the record of our database."
+            });
+          }
+        })
+      })
       this.spin = false;
     },
     handleLoginError (value) {

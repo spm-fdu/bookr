@@ -28,7 +28,11 @@
 
 <script>
 export default {
-  name: 'Landing',
+  mounted () {
+    if (this.$store.state.persisted.authenticated) {
+      this.$router.push('/dashboard');
+    }
+  }
 }
 </script>
 
