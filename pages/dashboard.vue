@@ -73,6 +73,7 @@ export default {
     TestPie,
     // AvailabilityPieChart
   },
+  middleware: 'authenticated',
   data () {
     return {
       upcoming: {
