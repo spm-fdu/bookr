@@ -169,7 +169,7 @@ export default {
             .doc(this.databaseUid)
             .collection("bookings")
             .doc()
-            .set({ start: startEndTimes[0], end: startEndTimes[1] });
+            .set({ start: startEndTimes[0], end: startEndTimes[1], day: parseInt(key) });
         }
       }
     },
