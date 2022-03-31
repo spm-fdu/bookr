@@ -163,18 +163,15 @@ export default {
       console.log(this.bookings);
       for (let key in this.bookings) {
         for (const separateSlot of this.bookings[key]) {
-          console.log(separateSlot);
-          let arr = separateSlot.split("-");
-          console.log(arr);
+          let startEndTimes = separateSlot.split("-");
+          this.$fire.firestore
+            .collection("users")
+            .doc(this.databaseUid)
+            .collection("bookings")
+            .doc()
+            .set({ start: startEndTimes[0], end: startEndTimes[1] });
         }
       }
-
-      this.$fire.firestore
-        .collection("users")
-        .doc(this.databaseUid)
-        .collection("bookings")
-        .doc()
-        .set({});
     },
   },
 };
