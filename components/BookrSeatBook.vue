@@ -19,7 +19,7 @@
           </v-col>
           <v-col class="ml-4" sm="10">
             <div class="font-weight-normal">
-              {{ dayFull[d - 1] }} {{ week[d - 1] }}
+              {{ dayFull[d - 1] }} {{ week[d - 1] }} {{ d }}
             </div>
 
             <span v-for="(slot, index) in slots" :key="index">
@@ -157,6 +157,17 @@ export default {
       this.$store.commit("incrStepper");
       console.log(this.$store.state.stepper);
     },
+    dayIndexToString(dayIndex) {
+      switch(dayIndex) {
+        case 1: return "Monday";
+        case 2: return "Tuesday";
+        case 3: return "Wednesday";
+        case 4: return "Thrusday";
+        case 5: return "Friday";
+
+        default: return "None";
+      }
+    },
     sendBookingsToDatabase() {
       console.log("Database uid: ", this.databaseUid);
       console.log(typeof this.bookings);
@@ -164,12 +175,20 @@ export default {
       for (let key in this.bookings) {
         for (const separateSlot of this.bookings[key]) {
           let startEndTimes = separateSlot.split("-");
+          let dayMonth = this.week[key - 1].split("/");
+
           this.$fire.firestore
             .collection("users")
             .doc(this.databaseUid)
             .collection("bookings")
             .doc()
-            .set({ start: startEndTimes[0], end: startEndTimes[1], day: parseInt(key) });
+            .set({
+              start: startEndTimes[0],
+              end: startEndTimes[1],
+              day: this.dayIndexToString(parseInt(key)),
+              dayNumber: parseInt(dayMonth[0]),
+              month: parseInt(dayMonth[1]),
+            });
         }
       }
     },
