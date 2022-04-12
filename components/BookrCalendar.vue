@@ -49,7 +49,7 @@
                 class="pt-2 pb-2 text-center justify-center bookr__calendar_day"
               >
                 <span style="font-weight: bold">{{ dayShort[i - 1] }}</span>
-                <span>{{ week[i - 1] }}/{{ year[i - 1] }}</span>
+                <span>{{ week[i - 1] }}/{{ getLastTwoDigitsYear(year[i - 1]) }}</span>
               </v-sheet>
             </v-item>
           </template>
@@ -163,7 +163,7 @@ export default {
     },
     getLastTwoDigitsYear(year) {
       const yearLastTwoDigits = String(year).slice(-2);
-      return Number(yearLastTwoDigitsStr);
+      return Number(yearLastTwoDigits);
     }
   }
 }
