@@ -176,12 +176,16 @@ export default {
         for (const separateSlot of this.bookings[key]) {
           let startEndTimes = separateSlot.split("-");
           let dayMonth = this.week[key - 1].split("/");
+          let year = "2022"; // TODO: Set actual booking year
 
+          let docUid = year + "-" + dayMonth[1] + "-" + dayMonth[0];
+          console.log(this.time);
+          console.log(this.week);
           this.$fire.firestore
             .collection("users")
             .doc(this.databaseUid)
             .collection("bookings")
-            .doc()
+            .doc(docUid)
             .set({
               start: startEndTimes[0],
               end: startEndTimes[1],
