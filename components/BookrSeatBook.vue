@@ -161,9 +161,6 @@ export default {
       return this.dayFull[dayIndex - 1];
     },
     sendBookingsToDatabase() {
-      console.log("Database uid: ", this.databaseUid);
-      console.log(typeof this.bookings);
-      console.log(this.bookings);
       for (let key in this.bookings) {
         for (const separateSlot of this.bookings[key]) {
           let startEndTimes = separateSlot.split("-");
