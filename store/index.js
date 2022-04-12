@@ -49,6 +49,7 @@ export const state = () => ({
   dayShort: ['MON','TUE','WED','THU','FRI'],
   dayFull: ["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY"],
   week: [],
+  year: [],
   timeslots: {}, // [],
   test: {},
   databaseUid: ''
@@ -72,6 +73,9 @@ export const getters = {
   },
   week: (state) => {
     return state.week
+  },
+  year: (state) => {
+    return state.year
   }
 }
 
@@ -131,6 +135,9 @@ export const mutations = {
   },
   setWeek (state, week) {
     state.week = week;
+  },
+  setYear(state, year) {
+    state.year = year;
   },
   setDatabaseUid(state, uid) {
     state.databaseUid = uid;

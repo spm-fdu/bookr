@@ -19,7 +19,7 @@
           </v-col>
           <v-col class="ml-4" sm="10">
             <div class="font-weight-normal">
-              {{ dayFull[d - 1] }} {{ week[d - 1] }}
+              {{ dayFull[d - 1] }} {{ week[d - 1] }}/{{ year[d - 1] }}
             </div>
 
             <span v-for="(slot, index) in slots" :key="index">
@@ -66,7 +66,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["time", "dayFull", "week", "stepper"]),
+    ...mapGetters(["time", "dayFull", "week", "year", "stepper"]),
     bookings() {
       var t = {},
         counts = {},
@@ -168,7 +168,7 @@ export default {
         for (const separateSlot of this.bookings[key]) {
           let startEndTimes = separateSlot.split("-");
           let dayMonth = this.week[key - 1].split("/");
-          let year = "2022"; // TODO: Set actual booking year
+          let year = this.year[key - 1];
 
           let docUid = year + "-" + dayMonth[1] + "-" + dayMonth[0];
 
@@ -185,6 +185,7 @@ export default {
               day: this.dayIndexToString(parseInt(key)),
               dayNumber: parseInt(dayMonth[0]),
               month: parseInt(dayMonth[1]),
+              year: parseInt(year)
             });
         }
       }
