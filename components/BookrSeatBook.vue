@@ -179,13 +179,14 @@ export default {
           let year = "2022"; // TODO: Set actual booking year
 
           let docUid = year + "-" + dayMonth[1] + "-" + dayMonth[0];
-          console.log(this.time);
-          console.log(this.week);
+
           this.$fire.firestore
             .collection("users")
             .doc(this.databaseUid)
             .collection("bookings")
             .doc(docUid)
+            .collection("data")
+            .doc()
             .set({
               start: startEndTimes[0],
               end: startEndTimes[1],
