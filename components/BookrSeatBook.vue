@@ -19,7 +19,7 @@
           </v-col>
           <v-col class="ml-4" sm="10">
             <div class="font-weight-normal">
-              {{ dayFull[d - 1] }} {{ week[d - 1] }} {{ d }}
+              {{ dayFull[d - 1] }} {{ week[d - 1] }}
             </div>
 
             <span v-for="(slot, index) in slots" :key="index">
