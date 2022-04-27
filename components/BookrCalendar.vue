@@ -57,6 +57,16 @@
       </v-row>
     </v-item-group>
 
+    <!-- TOREMOVE: Testing -->
+    <v-btn
+        depressed
+        block
+        @click="
+          fetchData();
+        "
+        >FETCH</v-btn
+      >
+
     <div class="bookr__calendar_conditions mt-4">
       <b>min</b
       ><span class="mr-4 font-weight-normal"> {{ conditions.min }} hour</span>
@@ -164,6 +174,22 @@ export default {
     getLastTwoDigitsYear(year) {
       const yearLastTwoDigits = String(year).slice(-2);
       return Number(yearLastTwoDigits);
+    },
+    fetchData() {
+      // TODO we should get user data with persistent and before that, via set with onAuthStateChanged(...args)
+      const uid = this.$store.state.databaseUid;
+      console.log(uid);
+
+      const ref = this.$fire.database.ref("users");
+      //console.log(ref);
+      
+      ref.on("value", (snapshot) => {
+        console.log(snapshot.val());
+        console.log("hi1");
+      }, (errorObject) => {
+        console.log(errorObject.name);
+        console.log("hi2");
+      });
     }
   }
 }
