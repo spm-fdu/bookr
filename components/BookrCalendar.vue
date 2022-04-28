@@ -194,7 +194,7 @@ export default {
       const uid = this.$store.state.databaseUid;
       console.log(uid);
 
-      const snapshot = await this.$fire.firestore
+      /*const snapshot = await this.$fire.firestore
         .collection("users")
         .doc(uid)
         .collection("bookings")
@@ -208,6 +208,16 @@ export default {
 
       snapshot.forEach((doc) => {
           console.log(doc.id, " => ", doc.data());
+      });*/
+
+      this.$fire.firestore
+        .collection('users')
+        .doc(uid)
+        .collection('bookings')
+        .get()
+        .then(querySnapshot => {
+          const documents = querySnapshot.docs.map(doc => doc.data())
+          // do something with documents
         });
     },
   },
