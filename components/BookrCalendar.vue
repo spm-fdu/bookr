@@ -194,31 +194,19 @@ export default {
       const uid = this.$store.state.databaseUid;
       console.log(uid);
 
-      /*const snapshot = await this.$fire.firestore
+      const snapshot = await this.$fire.firestore
         .collection("users")
         .doc(uid)
         .collection("bookings")
         .get();
       
-      console.log(snapshot);
-
       if (snapshot.empty) {
-        console.log('No matching documents.');
+        console.log("No matching documents");
       }  
-
+    
       snapshot.forEach((doc) => {
           console.log(doc.id, " => ", doc.data());
-      });*/
-
-      this.$fire.firestore
-        .collection('users')
-        .doc(uid)
-        .collection('bookings')
-        .get()
-        .then(querySnapshot => {
-          const documents = querySnapshot.docs.map(doc => doc.data())
-          // do something with documents
-        });
+      });
     },
   },
 };
