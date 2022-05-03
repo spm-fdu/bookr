@@ -195,20 +195,20 @@ export default {
       console.log(uid);
 
       const ref = await this.$fire.firestore
-      .collection("users")
-      .doc(uid)
-      .collection("bookings")
-      .get()
-      .then((bookingsSnapshot) => {
-        bookingsSnapshot.forEach(bookings => {
-          console.log(bookings.id, " => ", bookings.data());
-          const ref2 = doc.ref.collection("data").get().then(bookingSnapshot => {
-            bookingSnapshot.forEach(booking => {
+        .collection("users")
+        .doc(uid)
+        .collection("bookings")
+        .get()
+        .then((bookingsSnapshot) => {
+          bookingsSnapshot.forEach(bookings => {
+            console.log(bookings.id, " => ", bookings.data());
+            const ref2 = bookings.ref.collection("data").get().then(bookingSnapshot => {
+              bookingSnapshot.forEach(booking => {
                   console.log(booking.id, booking.data())
-              });
+                });
+            });
           });
         });
-      });
     },
   },
 };
