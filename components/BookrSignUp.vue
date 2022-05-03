@@ -294,11 +294,11 @@ export default {
           const user = result.user;
           console.log(user);
 
-          this.$fire.firestore.collection("users").doc(user.uid).set({});
+          this.$fire.firestore.collection("users").doc(user.uid).set({ admin: false });
 
           this.$store.commit("setDatabaseUid", user.uid);
 
-          console.log("Database uid is: ", this.$store.state.databaseUid);
+          console.log("Database uid is: ", this.$store.state.databaseUid); // TODO: Use persistent instead
 
           this.$router.push('/booking');
         })
