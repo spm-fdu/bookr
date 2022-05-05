@@ -49,13 +49,20 @@
                 class="pt-2 pb-2 text-center justify-center bookr__calendar_day"
               >
                 <span style="font-weight: bold">{{ dayShort[i - 1] }}</span>
-                <span>{{ week[i - 1] }}/{{ getLastTwoDigitsYear(year[i - 1]) }}</span>
+                <span
+                  >{{ week[i - 1] }}/{{
+                    getLastTwoDigitsYear(year[i - 1])
+                  }}</span
+                >
               </v-sheet>
             </v-item>
           </template>
         </v-col>
       </v-row>
     </v-item-group>
+
+    <!-- TOREMOVE: Testing -->
+    <v-btn depressed block @click="fetchData()">FETCH</v-btn>
 
     <div class="bookr__calendar_conditions mt-4">
       <b>min</b
@@ -69,49 +76,66 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters } from "vuex";
 
 export default {
-  name: 'BookrCalendar',
+  name: "BookrCalendar",
   props: {
     width: {
-      type: String, 
+      type: String,
       required: false,
     },
     conditions: {
       type: Object,
       required: true,
-    }
+    },
   },
-  data () {
+  data() {
     return {
       // day: ['MON','TUE','WED','THU','FRI'],
-      time: ['7 AM','8 AM','9 AM','10 AM','11 AM','12 PM','1 PM','2 PM','3 PM','4 PM','5 PM','6 PM','7 PM','8 PM','9 PM','10 PM'],
-      timeslots: {}
-    }
+      time: [
+        "7 AM",
+        "8 AM",
+        "9 AM",
+        "10 AM",
+        "11 AM",
+        "12 PM",
+        "1 PM",
+        "2 PM",
+        "3 PM",
+        "4 PM",
+        "5 PM",
+        "6 PM",
+        "7 PM",
+        "8 PM",
+        "9 PM",
+        "10 PM",
+      ],
+      timeslots: {},
+    };
   },
   computed: {
-    ...mapGetters(['dayShort']),
-    numBox () {
-      return Array.from((Array((this.time.length*2)+1)), (e,i)=>i+1)
+    ...mapGetters(["dayShort"]),
+    numBox() {
+      return Array.from(Array(this.time.length * 2 + 1), (e, i) => i + 1);
     },
-    week () {
+    week() {
       var current = new Date();
       var week = new Array();
-      current.setDate((current.getDate() - current.getDay() + 1));
+      current.setDate(current.getDate() - current.getDay() + 1);
       for (var i = 0; i < 5; i++) {
         let t = new Date(current);
-        let p = t.getDate() + '/' + (t.getMonth()+1);
+        let p = t.getDate() + "/" + (t.getMonth() + 1);
         // t = t.split(' ').slice(0,2);
-        week.push(p); 
-        current.setDate(current.getDate() +1);
+        week.push(p);
+        current.setDate(current.getDate() + 1);
       }
-      this.$store.commit('setWeek', week);
-      return week
+      this.$store.commit("setWeek", week);
+      return week;
     },
-    year () {
+    year() {
       var current = new Date();
-      current.setDate((current.getDate() - current.getDay() + 1));
+      current.setDate(current.getDate() - current.getDay() + 1);
       var year = new Array();
       for (var i = 0; i < 5; i++) {
         let t = new Date(current);
@@ -119,54 +143,75 @@ export default {
         year.push(currentYear);
         current.setDate(current.getDate() + 1);
       }
-      this.$store.commit('setYear', year);
+      this.$store.commit("setYear", year);
       return year;
-    }
+    },
   },
   methods: {
-    updateList (day, time) {
+    updateList(day, time) {
       // timeslots {
       //   'key': {
       //     day: day,
       //     time: time,
       //   }
       // }
-      
 
-      if (Object.keys(this.timeslots).length > (this.conditions.max*2)-1 ) { return } // lets set a popup here 
+      if (Object.keys(this.timeslots).length > this.conditions.max * 2 - 1) {
+        return;
+      } // lets set a popup here
 
-      // day: 1...5 
-      // time: 0...32 (33 in total) 
-      let k = day + '_' + time;
-      // time = ((time-1) * 30 / 60) + 7; // minus one because it's 1-indexed; hours + beginning 
+      // day: 1...5
+      // time: 0...32 (33 in total)
+      let k = day + "_" + time;
+      // time = ((time-1) * 30 / 60) + 7; // minus one because it's 1-indexed; hours + beginning
       // console.log('before:' + this.$store.getters.timeslots);
-      if (this.timeslots[k] !== undefined) { 
+      if (this.timeslots[k] !== undefined) {
         delete this.timeslots[k];
-        this.$store.commit('removeTimeslots', k);
-        this.$store.commit('updateHistory', 'remove' );
+        this.$store.commit("removeTimeslots", k);
+        this.$store.commit("updateHistory", "remove");
         // console.log('here man deleting ' + k)
-      }
-      else { 
+      } else {
         // console.log('here man inserting ' + k)
 
         this.timeslots[k] = {
-          'day': day, 
-          'time': { 
-            'start': this.$store.getters.time[time-1], // session start 
-            'end': this.$store.getters.time[time] // session end 
-            }
-          } 
-        this.$store.commit('setTimeslots', this.timeslots);
-        this.$store.commit('updateHistory', 'insert' )
+          day: day,
+          time: {
+            start: this.$store.getters.time[time - 1], // session start
+            end: this.$store.getters.time[time], // session end
+          },
+        };
+        this.$store.commit("setTimeslots", this.timeslots);
+        this.$store.commit("updateHistory", "insert");
       }
       // console.log('after:' + this.$store.getters.timeslots);
     },
     getLastTwoDigitsYear(year) {
       const yearLastTwoDigits = String(year).slice(-2);
       return Number(yearLastTwoDigits);
-    }
-  }
-}
+    },
+    async fetchData() {
+      // TODO we should get user data with persistent and before that, via set with onAuthStateChanged(...args)
+      const uid = this.$store.state.databaseUid;
+      console.log(uid);
+
+      const ref = await this.$fire.firestore
+        .collection("users")
+        .doc(uid)
+        .collection("bookings")
+        .get()
+        .then((bookingsSnapshot) => {
+          bookingsSnapshot.forEach(bookings => {
+            console.log(bookings.id, " => ", bookings.data());
+            const ref2 = bookings.ref.collection("data").get().then(bookingSnapshot => {
+              bookingSnapshot.forEach(booking => {
+                  console.log(booking.id, booking.data())
+                });
+            });
+          });
+        });
+    },
+  },
+};
 </script>
 
 <style lang="scss">

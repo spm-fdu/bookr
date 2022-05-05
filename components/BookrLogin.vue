@@ -125,7 +125,7 @@ export default {
     login () {
       this.spin = true; 
       // set persistence on auth; requires explicit sign out or token expiration 
-      this.$fire.auth.setPersistence(this.$fireModule.auth.Auth.Persistence.LOCAL).then(() => {
+      /*this.$fire.auth.setPersistence(this.$fireModule.auth.Auth.Persistence.LOCAL).then(() => {
         this.$fire.auth.onAuthStateChanged((user) => {
           if (user) {
             // if login, retrieve name 
@@ -136,6 +136,7 @@ export default {
               email: user._delegate.email,
               authenticated: true,
             }
+
             this.persist(userInfo);
             
             // reroute
@@ -146,7 +147,21 @@ export default {
             });
           }
         })
-      })
+      })*/
+
+      this.$fire.auth.signInWithEmailAndPassword(this.credentials.uid, this.credentials.pwd)
+        .then((userCredential) => {
+          const user = userCredential.user;
+          console.log(user.email);
+          this.$store.commit("setDatabaseUid", user.uid);
+          console.log("Database uid is: ", this.$store.state.databaseUid);
+        })
+        .catch((error) => {
+          console.log(error.code, error.message);
+        });
+
+      this.$router.push('/booking');
+
       this.spin = false;
     },
     handleLoginError (value) {
