@@ -1,0 +1,36 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isAdmin() {
+      return request.auth.token.role == "admin"
+    }
+
+    function isUser() {
+      return request.auth.token.role == "user"
+    }
+
+    match /users/{userId} {
+      allow read;
+      allow create: if request.auth.uid == userId;
+    }
+    match /bookings/{userId}/{bookingId}/{date}/data/{slot} {
+      allow read; 
+      // only authorized user is allow to make a booking 
+      allow create: if isUser() && request.resource.data.availability == "available";
+      allow update;
+      // : if request.resource.data.owner == request.auth.uid;
+      // if resource.data.owner == request.auth.uid && request.resource.data.owner == request.auth.uid;
+      allow read; 
+    }
+    match /rooms/{roomId}/{date}/{slot} {
+      allow read;
+      allow create: if isAdmin();
+      // allow user to update (book a room) if slot is not taken, or update the slot to cancel order or admin has ultimate rights to update
+      allow update: if (request.resource.data.booker != null && resource.data.availability == "available") || (request.resource.data.booker == resource.data.booker && request.resource.data.booker != null) || isAdmin();
+      allow read; 
+      // : if request.resource.data.owner == request.auth.uid;
+      // Only the room owner is allowed to modify it, and owner mustn't be able to assign his room to other user.
+      //: if resource.data.owner == request.auth.uid && request.resource.data.owner == request.auth.uid;
+    }
+  }
+}
