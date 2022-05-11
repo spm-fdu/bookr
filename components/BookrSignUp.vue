@@ -63,7 +63,7 @@
               depressed
               class="pl-16 pr-16"
               :disabled="disabled.both || disabled.email || disabled.pwd"
-              @click="signUp()"
+              @click="signUpEmail()"
               >Sign Up</v-btn
             >
           </v-col>
@@ -285,10 +285,26 @@ export default {
       return "none";
     },
     signUpEmail() {
-      this.$fire.auth.createUserWithEmailAndPassword(
-        this.credentials.uid,
-        this.credentials.pwd
-      );
+      this.$fire.auth
+        .createUserWithEmailAndPassword(
+          this.credentials.uid,
+          this.credentials.pwd
+        )
+        .then((result) => {
+          const user = result.user;
+          console.log(user);
+
+          this.$fire.firestore.collection("users").doc(user.uid).set({ admin: false });
+
+          this.$store.commit("setDatabaseUid", user.uid);
+
+          console.log("Database uid is: ", this.$store.state.databaseUid); // TODO: Use persistent instead
+
+          this.$router.push('/booking');
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
     async sendPhoneVerificationCode() {
       const auth = getAuth();
@@ -310,9 +326,16 @@ export default {
       window.confirmationResult
         .confirm(code)
         .then((result) => {
-          // User signed in successfully.
           const user = result.user;
           console.log(user);
+
+          this.$fire.firestore.collection("users").doc(user.uid).set({});
+
+          this.$store.commit("setDatabaseUid", user.uid);
+
+          console.log("Database uid is: ", this.$store.state.databaseUid);
+
+          this.$router.push('/booking');
         })
         .catch((err) => {
           console.log(err);
@@ -329,6 +352,14 @@ export default {
               let user = result.user;
               console.log(token);
               console.log(user);
+
+              this.$fire.firestore.collection("users").doc(user.uid).set({});
+
+              this.$store.commit("setDatabaseUid", user.uid);
+
+              console.log("Database uid is: ", this.$store.state.databaseUid);
+
+              this.$router.push('/booking');
             })
             .catch((err) => {
               console.log(err);
