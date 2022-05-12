@@ -4,23 +4,23 @@
       <v-spacer class="ma-6"></v-spacer>
       <!-- <v-card-subtitle class="pt-2 mb-4">{{ subtitle }}</v-card-subtitle> -->
 
-      <v-text-field 
-        v-model="credentials.uid" 
-        :label="labels.uid" 
+      <v-text-field
+        v-model="credentials.uid"
+        :label="labels.uid"
         :rules="[required,validateEmailPhone]"
         outlined :loading="spin"
-        class="ml-16 mr-16" 
+        class="ml-16 mr-16"
         color="#3b47ec"
         ></v-text-field>
       <v-spacer></v-spacer>
-      <v-text-field 
-        v-model="credentials.pwd" 
-        :label="labels.pwd" 
+      <v-text-field
+        v-model="credentials.pwd"
+        :label="labels.pwd"
         :append-icon="showPwd ? 'mdi-eye' : 'mdi-eye-off'"
         :type="showPwd ? 'text' : 'password'"
         :rules="[required,validatePasswordLength]"
         outlined :loading="spin"
-        class="ml-16 mr-16" 
+        class="ml-16 mr-16"
         color="#3b47ec"
         @click:append="showPwd = !showPwd"
         ></v-text-field>
@@ -36,7 +36,7 @@
       <v-btn depressed class="pl-16 pr-16" :disabled="disabled.both || disabled.email || disabled.pwd" @click="login()">login</v-btn>
       <v-divider class="login__short_divider "></v-divider>
 
-      <v-btn fab depressed x-small class="ml-4 mr-4" v-for="(i,index) in social" :key=index>
+      <v-btn fab depressed x-small class="ml-4 mr-4" v-for="(i,index) in social" :key="index" @click="signUpThirdParty(index)">
         <v-icon>{{ i.icon }}</v-icon>
       </v-btn>
     </v-card>
@@ -61,13 +61,10 @@ export default {
         pwd: 'Password',
       },
       credentials: {
-        uid: '', 
+        uid: '',
         pwd: '',
       },
       social: [
-        {
-          icon: 'mdi-facebook'
-        },
         {
           icon: 'mdi-google'
         }
@@ -76,10 +73,10 @@ export default {
         both: true,
         email: true,
         pwd: true,
-      }, 
+      },
       showPwd: false,
       spin: false,
-      
+
     }
   },
   computed: {
@@ -104,7 +101,7 @@ export default {
     validateEmailPhone (value) {
       let eReg = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,24}))$/
       let pReg = /^\+?([0-9]{2})\)?[-. ]?([0-9]{5})[-. ]?([0-9]{4})$/
-      
+
       if(eReg.test(value) || pReg.test(value)) {
         this.disabled.email = false;
         return true
@@ -118,17 +115,17 @@ export default {
         this.disabled.pwd = true;
         return "Min. 8 characters"
       } else {
-        this.disabled.pwd = false; 
+        this.disabled.pwd = false;
         return true
       }
     },
     login () {
-      this.spin = true; 
-      // set persistence on auth; requires explicit sign out or token expiration 
+      this.spin = true;
+      // set persistence on auth; requires explicit sign out or token expiration
       /*this.$fire.auth.setPersistence(this.$fireModule.auth.Auth.Persistence.LOCAL).then(() => {
         this.$fire.auth.onAuthStateChanged((user) => {
           if (user) {
-            // if login, retrieve name 
+            // if login, retrieve name
             let displayName = user._delegate.displayName.split(' ');
             const userInfo = {
               fname: displayName[0],
@@ -138,7 +135,7 @@ export default {
             }
 
             this.persist(userInfo);
-            
+
             // reroute
             this.$router.push('/dashboard');
           } else {
@@ -166,14 +163,42 @@ export default {
     },
     handleLoginError (value) {
       if (typeof(value) !== Boolean) {
-        return true 
+        return true
       } else {
         this.labels.pwd = "The credentials you provided doesn't match the record of our database."
         return false
       }
     },
+    async signUpThirdParty(i) {
+      switch (i) {
+        case 0:
+          const provider = new this.$fireModule.auth.GoogleAuthProvider();
+          this.$fire.auth
+            .signInWithPopup(provider)
+            .then((result) => {
+              let token = result.credential.accessToken;
+              let user = result.user;
+              console.log(token);
+              console.log(user);
+
+              this.$fire.firestore.collection("users").doc(user.uid).set({});
+
+              this.$store.commit("setDatabaseUid", user.uid);
+
+              console.log("Database uid is: ", this.$store.state.databaseUid);
+
+              this.$router.push('/booking');
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+          break;
+        default:
+          break;
+      }
+    },
     resetPassword () {
-      // todo 
+      // todo
     }
   },
 }
@@ -187,11 +212,11 @@ export default {
   background-color: #f7f7f7;
   border-radius: 20%;
 }
-.login__reset a { 
+.login__reset a {
   transition: 0.3s;
   color: lightgrey;
 }
-.login__reset a:hover { 
+.login__reset a:hover {
   color: #3b47ec
 }
 .login__short_divider {
