@@ -5,7 +5,7 @@
       v-model="menu"
       offset-x
       content-class="elevation-1"
-      :close-on-content-click="false"
+      :close-on-content-click="true"
     >
       <template v-slot:activator="{ on, attrs }">
         <v-btn
@@ -62,7 +62,7 @@ export default {
     return {
       menu: false,
       email: '',
-      items: [
+      userItems: [
         {
           to: 'booking',
           icon: 'mdi-clipboard-list-outline',
@@ -78,6 +78,8 @@ export default {
           icon: 'mdi-chart-line',
           label: 'dashboard'
         },
+      ],
+      items: [
         {
           to: 'profile',
           icon: 'mdi-account',
@@ -100,7 +102,7 @@ export default {
       }
     }
   },
-  mounted () {
+  created () {
     this.email = this.$store.state.persisted.email;
 
     if (this.$store.state.persisted.admin === true) {
@@ -109,6 +111,8 @@ export default {
         icon: 'mdi-crown-outline',
         label: 'admin portal'
       })
+    } else {
+      this.items = this.userItems.concat(this.items);
     }
   }
 }
