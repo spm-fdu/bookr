@@ -16,18 +16,16 @@ app.post('/', async (req, res) => {
         service: 'gmail',
         auth: {
             user: 'spm.fudan@gmail.com',
-            pass: ''
+            pass: process.env.GMAIL_APP_PASSWORD
         },
     });
 
     const info = await transporter.sendMail({
-        from: '"SPM Fudan 👻" <spm.fudan@gmail.com>',
+        from: '"SPM Fudan" <spm.fudan@gmail.com>',
         to: req.body.email,
-        subject: "Hello ✔",
-        text: "Hello world?",
-        html: "<b>Hello world?</b>"
+        subject: "Booking confirmation",
+        text: "Hi, this mail has been sent to you to confirm your recently made bookings. Thank you.",
     });
 
-    console.log(req.body.email);
     console.log("Message sent: %s", info.messageId);
 });
