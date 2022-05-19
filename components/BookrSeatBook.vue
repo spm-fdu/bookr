@@ -43,8 +43,7 @@
         block
         :disabled="disable"
         @click="
-          moveNext();
-          sendBookingsToDatabase();
+        sendMail();
         "
         >Continue</v-btn
       >
@@ -202,6 +201,17 @@ export default {
             });
         }
       }
+    },
+    async sendMail() {
+      await this.$axios.$post('/api/mailer', {
+        email: 'gerardmarcosfreixas@gmail.com'
+      })
+      .then((res) => {
+
+      })
+      .catch((err) => {
+        console.log("Err:", err);
+      })
     },
   },
 };

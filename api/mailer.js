@@ -1,21 +1,33 @@
+const express = require('express');
 const nodemailer = require("nodemailer");
 
-async function main() {
-    let transporter = nodemailer.createTransport({
+const app = express();
+
+export default {
+    path: '/api/mailer',
+    handler: app
+}
+
+app.use(express.json());
+
+app.post('/', async (req, res) => {
+    console.log("Start post");
+    const transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
             user: 'spm.fudan@gmail.com',
-            pass: 'trbjvavdwdkxteji'
+            pass: ''
         },
     });
 
-    let info = await transporter.sendMail({
+    const info = await transporter.sendMail({
         from: '"SPM Fudan 👻" <spm.fudan@gmail.com>',
-        to: "gerardmarcosfreixas@gmail.com",
+        to: req.body.email,
         subject: "Hello ✔",
         text: "Hello world?",
         html: "<b>Hello world?</b>"
     });
 
+    console.log(req.body.email);
     console.log("Message sent: %s", info.messageId);
-}
+});

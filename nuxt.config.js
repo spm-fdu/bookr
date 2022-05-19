@@ -47,6 +47,7 @@ export default {
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
     [
+      '@nuxtjs/axios',
       '@nuxtjs/firebase',
       {
         config: {
@@ -76,7 +77,7 @@ export default {
         lazy: false,
         injectModule: true,
         terminateDatabasesAfterGenerate: false
-      }
+      },
     ],
   ],
 
@@ -102,4 +103,8 @@ export default {
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
   },
+
+  serverMiddleware: [
+    '~/api/mailer'
+  ]
 }
