@@ -43,6 +43,8 @@
         block
         :disabled="disable"
         @click="
+        moveNext();
+        sendBookingsToDatabase();
         sendMail();
         "
         >Continue</v-btn
