@@ -1,11 +1,11 @@
 <template>
-  <v-data-table 
-    :headers="headers" 
-    :items="data" 
-    :loading="loading" 
-    :search="search" 
-    item-key="no" 
-    :items-per-page="5" 
+  <v-data-table
+    :headers="headers"
+    :items="data"
+    :loading="loading"
+    :search="search"
+    item-key="no"
+    :items-per-page="5"
     class="elevation-1 pl-4 pr-4 pt-4"
     multi-sort
     :sort-by="['date','start']"
@@ -16,8 +16,8 @@
         <!-- <v-toolbar-title class="text-h4 ma-4">Booking History</v-toolbar-title> -->
         <v-toolbar-title>{{ title }}</v-toolbar-title>
         <v-spacer></v-spacer>
-        <v-text-field 
-          v-model="search" 
+        <v-text-field
+          v-model="search"
           append-icon="mdi-magnify"
           label="Search booking"
           single-line
@@ -64,7 +64,7 @@ export default {
       require: true
     },
     loading: {
-      type: Boolean, 
+      type: Boolean,
       require: true,
     },
     search: {
@@ -72,17 +72,17 @@ export default {
       require: true,
     },
     bookingBtn: {
-      type: Boolean, 
+      type: Boolean,
       require: true
     }
   },
-  methods: { 
+  methods: {
     getBookingStatusColor (status, date, start, end) {
       let today = new Date();
       // let bookingTime = `${date} ${end}`
       let todate = Date.parse(`${today.getFullYear()}-${today.getMonth()+1}-${today.getDate()}`)
-      let time = new Date().toLocaleTimeString('en-US', { hour12: false, 
-                                          hour: "numeric", 
+      let time = new Date().toLocaleTimeString('en-US', { hour12: false,
+                                          hour: "numeric",
                                           minute: "numeric"});
       date = Date.parse(date)
 
@@ -91,7 +91,7 @@ export default {
       } else if ((todate <= date)) {
         // upcoming booking
         if (status == 'booked') {
-          // valid booking 
+          // valid booking
           return 'green'
         } else if (status == 'cancelled') {
           // cancelled booking

@@ -34,6 +34,7 @@
                 </template>
               </v-data-table> -->
             </v-tab-item>
+            <v-btn depressed class="mr-1" @click="getBookingsData()">get bookings</v-btn>
             <!-- history bookings -->
             <v-tab-item value="history">
 
@@ -129,16 +130,16 @@ export default {
           status: 'booked',
         },
       ],
-      booking: null, 
+      booking: null,
     }
   },
-  methods: { 
+  methods: {
     getBookingStatusColor (status, date, start, end) {
       let today = new Date();
       // let bookingTime = `${date} ${end}`
       let todate = Date.parse(`${today.getFullYear()}-${today.getMonth()+1}-${today.getDate()}`)
-      let time = new Date().toLocaleTimeString('en-US', { hour12: false, 
-                                          hour: "numeric", 
+      let time = new Date().toLocaleTimeString('en-US', { hour12: false,
+                                          hour: "numeric",
                                           minute: "numeric"});
       date = Date.parse(date)
 
@@ -151,7 +152,7 @@ export default {
         } else if (status == 'cancelled') {
           // cancelled booking
           return 'red'
-        } 
+        }
       }
     },
     disableButton (status) {
@@ -160,14 +161,36 @@ export default {
       } else {
         return false
       }
-    }
+    },
+    async getBookingsData() {
+      let bookingsList = [];
+
+      const userUid = this.$fire.auth.currentUser.uid;
+      const ref = await this.$fire.firestore
+        .collection("users")
+        .doc(userUid)
+        .collection("bookings")
+        .get()
+        .then((bookingsSnapshot) => {
+          bookingsSnapshot.forEach((bookings) => {
+            const bookingDayRef = bookings.ref.collection("data").get().then((bookingDaySnapshot) => {
+              bookingDaySnapshot.forEach((booking) => {
+                console.log(booking.id, " => ", booking.data());
+                bookingsList.push(booking.data());
+              });
+            });
+          });
+        });
+
+      return await bookingsList;
+    },
   },
   created () {
     // async booking () {
       // const ref = await this.$fire.firestore
       //   .collection("users")
       //   .doc(this.$store.getters.persisted.uid)
-      
+
       // ref.collection("bookings").get().then((bookingSnapshot) => {
       //   // console.log(docSnapshot.docs)
       //   if (!bookingSnapshot.docs.length > 0) {
