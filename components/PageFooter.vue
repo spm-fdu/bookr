@@ -1,5 +1,5 @@
 <template>
-  <div class="footer">
+  <div class="footer pt-16">
     <img src="../static/footer.svg" object-fill style="width:100%; height:100%; background-color:white; pointer-events:none;">
     <div class="footer__content">
       <v-row style="background-color: #f9fafb">
