@@ -1,0 +1,134 @@
+<template>
+  <v-data-table 
+    :headers="headers" 
+    :items="data" 
+    :loading="loading" 
+    :search="search" 
+    item-key="no" 
+    :items-per-page="5" 
+    class="elevation-1 pl-4 pr-4 pt-4"
+    multi-sort
+    :sort-by="['date','start']"
+    :sort-desc="[false, false]"
+    >
+    <template v-slot:top>
+      <v-toolbar flat>
+        <!-- <v-toolbar-title class="text-h4 ma-4">Booking History</v-toolbar-title> -->
+        <v-toolbar-title>{{ title }}</v-toolbar-title>
+        <v-spacer></v-spacer>
+        <v-text-field 
+          v-model="search" 
+          append-icon="mdi-magnify"
+          label="Search booking"
+          single-line
+          hide-details
+          class="mr-6"
+        ></v-text-field>
+        <v-btn x-small fab depressed><v-icon>mdi-refresh</v-icon></v-btn>
+        <v-btn outlined depressed color="#6200ea" v-show="bookingBtn">
+          <nuxt-link to="booking" class="text-decoration-none text-overline" style="color:#6200ea">new booking</nuxt-link>
+        </v-btn>
+
+      </v-toolbar>
+    </template>
+    <template v-slot:item.status="{ item }">
+      <v-chip label :color="getBookingStatusColor(item.status, item.date, item.start, item.end)" text-color="white" :value="item.status" :key="item.status" class="text-overline">
+        {{ item.status }}
+      </v-chip>
+    </template>
+    <template v-slot:item.action="{ item }">
+      <!-- admin cannot reschedule for user, only user able to do so -->
+      <v-btn small outlined color="indigo" @click="editItem(item)" :disabled="disableButton(item.status)" v-show="!$store.state.persisted.admin">
+        edit
+      </v-btn>
+      <v-btn small outlined color="error" @click="deleteItem(item)" :disabled="disableButton(item.status)">
+        cancel
+      </v-btn>
+    </template>
+  </v-data-table>
+</template>
+
+<script>
+export default {
+  props: {
+    headers: {
+      type: Array,
+      require: true
+    },
+    data: {
+      type: Array,
+      require: true
+    },
+    title: {
+      type: String,
+      require: true
+    },
+    loading: {
+      type: Boolean, 
+      require: true,
+    },
+    search: {
+      type: String,
+      require: true,
+    },
+    bookingBtn: {
+      type: Boolean, 
+      require: true
+    }
+  },
+  methods: { 
+    getBookingStatusColor (status, date, start, end) {
+      let today = new Date();
+      // let bookingTime = `${date} ${end}`
+      let todate = Date.parse(`${today.getFullYear()}-${today.getMonth()+1}-${today.getDate()}`)
+      let time = new Date().toLocaleTimeString('en-US', { hour12: false, 
+                                          hour: "numeric", 
+                                          minute: "numeric"});
+      date = Date.parse(date)
+
+      if ((todate >= date) && (time > end) && status == 'booked') {
+        return 'grey'
+      } else if ((todate <= date)) {
+        // upcoming booking
+        if (status == 'booked') {
+          // valid booking 
+          return 'green'
+        } else if (status == 'cancelled') {
+          // cancelled booking
+          return 'red'
+        } else {
+          // unexpected error of some kind
+          return 'grey'
+        }
+      }
+    },
+    disableButton (status) {
+      if (status != 'booked') {
+        return true
+      } else {
+        return false
+      }
+    }
+  },
+}
+</script>
+
+
+<style>
+/* .v-data-table-header th {
+  white-space: nowrap;
+} */
+.v-data-table > .v-data-table__wrapper > table > thead > tr > th {
+  padding: 10px !important;
+  font-weight: bold !important;
+  font-size: 0.9rem;
+}
+.v-data-table > .v-data-table__wrapper > table > tbody > tr > td {
+  padding: 10px 10px 10px 10px !important;
+}
+
+tbody tr:nth-of-type(odd) {
+   background-color: rgba(0, 0, 0, .05);
+ }
+
+</style>
