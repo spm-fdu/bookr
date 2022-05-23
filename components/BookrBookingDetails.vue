@@ -125,6 +125,7 @@ export default {
               dayNumber: parseInt(dayMonth[0]),
               month: parseInt(dayMonth[1]),
               year: parseInt(year),
+              checkin: false,
             }).then((res) => {
 
             });
@@ -159,7 +160,7 @@ export default {
 
       // Check if bookings have been made in order to send an email
       if(uniqueDays.length > 0) {
-        this.$axios.$post('/api/mailer', {
+        /*this.$axios.$post('/api/mailer', {
           email: userEmail,
           content: bookingsStrJoined,
           })
@@ -168,7 +169,7 @@ export default {
           })
           .catch((err) => {
             console.log("Err:", err);
-          });
+          });*/
 
         // when email is sent, move to the next step
         this.moveNext();

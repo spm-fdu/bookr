@@ -138,7 +138,7 @@ export default {
           } // multiple of 2
         }
       });
-      
+
       this.$store.commit('setBookingDetails', f);
       return f;
     },
