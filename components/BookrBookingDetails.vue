@@ -68,7 +68,7 @@ export default {
     dayIndexToString (dayIndex) {
       return this.dayFull[dayIndex - 1];
     },
-    makeBooking () {
+    async makeBooking () {
       console.log(this.details);
       console.log(this.databaseUid);
 
@@ -161,12 +161,14 @@ export default {
           content: bookingsStrJoined,
           })
           .then(_ => {
-            // when email is sent, move to the next step
-            this.moveNext();
+
           })
           .catch((err) => {
             console.log("Err:", err);
           });
+
+        // when email is sent, move to the next step
+        this.moveNext();
       }
     }
   }
