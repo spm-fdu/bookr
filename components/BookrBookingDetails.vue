@@ -71,6 +71,10 @@ export default {
     makeBooking () {
       console.log(this.details);
       console.log(this.databaseUid);
+
+      const userEmail = this.$fire.auth.currentUser.email;
+      console.log(userEmail);
+
       let uniqueDays = [];
       for (let key in this.details) {
         for (const separateSlot of this.details[key]) {
@@ -114,7 +118,7 @@ export default {
               // successful
               // email is only sent when a booking is successfully made
               this.$axios.$post('/api/mailer', {
-                email: 'gerardmarcosfreixas@gmail.com'
+                email: userEmail
               })
               .then(_ => {
                 // when email is sent, move to the next step
