@@ -50,9 +50,11 @@
               >
                 <span style="font-weight: bold">{{ dayShort[i - 1] }}</span>
                 <span
-                  >{{ week[i - 1] }}/{{
+                  >{{ week[i - 1] }}
+                  <!-- /{{
                     getLastTwoDigitsYear(year[i - 1])
-                  }}</span
+                  }} -->
+                  </span
                 >
               </v-sheet>
             </v-item>
@@ -62,7 +64,7 @@
     </v-item-group>
 
     <!-- TOREMOVE: Testing -->
-    <v-btn depressed block @click="fetchData()">FETCH</v-btn>
+    <!-- <v-btn depressed block @click="fetchData()">FETCH</v-btn> -->
 
     <div class="bookr__calendar_conditions mt-4">
       <b>min</b
@@ -122,30 +124,34 @@ export default {
     week() {
       var current = new Date();
       var week = new Array();
+      var year = new Array();
       current.setDate(current.getDate() - current.getDay() + 1);
       for (var i = 0; i < 5; i++) {
         let t = new Date(current);
+        let y = t.getFullYear();
         let p = t.getDate() + "/" + (t.getMonth() + 1);
         // t = t.split(' ').slice(0,2);
         week.push(p);
+        year.push(y); 
         current.setDate(current.getDate() + 1);
       }
       this.$store.commit("setWeek", week);
+      this.$store.commit("setYear", year);
       return week;
     },
-    year() {
-      var current = new Date();
-      current.setDate(current.getDate() - current.getDay() + 1);
-      var year = new Array();
-      for (var i = 0; i < 5; i++) {
-        let t = new Date(current);
-        let currentYear = t.getFullYear();
-        year.push(currentYear);
-        current.setDate(current.getDate() + 1);
-      }
-      this.$store.commit("setYear", year);
-      return year;
-    },
+    // year() {
+    //   var current = new Date();
+    //   current.setDate(current.getDate() - current.getDay() + 1);
+    //   var year = new Array();
+    //   for (var i = 0; i < 5; i++) {
+    //     let t = new Date(current);
+    //     let currentYear = t.getFullYear();
+    //     year.push(currentYear);
+    //     current.setDate(current.getDate() + 1);
+    //   }
+    //   this.$store.commit("setYear", year);
+    //   return year;
+    // },
   },
   methods: {
     updateList(day, time) {

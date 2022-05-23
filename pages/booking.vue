@@ -1,5 +1,5 @@
 <template>
-    <div class="booking ml-16 mr-16 mb-16 mt-12">
+    <div fill-height fluid class="booking ml-16 mr-16 mb-16 mt-12">
       <template>
         <h1>
           Bookings
@@ -14,22 +14,29 @@
           <v-divider></v-divider>
             <v-stepper-step step="2" :color="stepper > 2 ? '#4de123' : '#3b47ec'" :complete="stepper > 2" complete-icon="mdi-check">DETAILS</v-stepper-step>
           <v-divider></v-divider>
-            <v-stepper-step :color="stepper > 3 ? '#4de123' : '#3b47ec'"  step="3" :complete="stepper > 3">FINISH</v-stepper-step>
+            <v-stepper-step :color="stepper >= 3 ? '#4de123' : '#3b47ec'"  step="3" :complete="stepper >= 3">FINISH</v-stepper-step>
         </v-stepper-header>
       </v-stepper>
 
-    
-      <bookr-calendar :conditions="cond" class="ma-0 ma-auto"></bookr-calendar>
+      <div v-show="stepper == 1">
+        <bookr-calendar :conditions="cond" class="ma-0 ma-auto"></bookr-calendar>
+        <div class="booking__seats mt-8">
+          <v-row>
+            <v-col sm="7">
+              <bookr-seat-desc :data="seat"></bookr-seat-desc>
+            </v-col>
+            <v-col md="4" offset-sm="1">
+              <bookr-seat-book></bookr-seat-book>
+            </v-col>
+          </v-row>
+        </div>
+      </div>
 
-      <div class="booking__seats mt-8">
-        <v-row>
-          <v-col sm="7">
-            <bookr-seat-desc :data="seat"></bookr-seat-desc>
-          </v-col>
-          <v-col md="4" offset-sm="1">
-            <bookr-seat-book></bookr-seat-book>
-          </v-col>
-        </v-row>
+      <div v-show="stepper == 2">
+        <bookr-booking-details></bookr-booking-details>
+      </div>
+      <div v-show="stepper == 3">
+        <bookr-booking-confirmation></bookr-booking-confirmation>
       </div>
     </div>
 </template>
@@ -39,13 +46,18 @@ import { mapGetters } from 'vuex';
 import BookrCalendar from '../components/BookrCalendar.vue';
 import BookrSeatDesc from '../components/BookrSeatDesc.vue';
 import BookrSeatBook from '../components/BookrSeatBook.vue';
+import BookrBookingDetails from '../components/BookrBookingDetails.vue';
+import BookrBookingConfirmation from '../components/BookrBookingConfirmation.vue'
 
 export default {
   components: {
     BookrCalendar,
     BookrSeatDesc,
-    BookrSeatBook
+    BookrSeatBook,
+    BookrBookingDetails,
+    BookrBookingConfirmation
   },
+  middleware: 'authenticated',
   data () {
     return {
       // stepper: 1, // step 1 

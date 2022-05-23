@@ -19,7 +19,7 @@
           </v-col>
           <v-col class="ml-4" sm="10">
             <div class="font-weight-normal">
-              {{ dayFull[d - 1] }} {{ week[d - 1] }}/{{ year[d - 1] }}
+              {{ dayFull[d - 1] }} {{ week[d - 1] }}
             </div>
 
             <span v-for="(slot, index) in slots" :key="index">
@@ -44,7 +44,6 @@
         :disabled="disable"
         @click="
           moveNext();
-          sendBookingsToDatabase();
         "
         >Continue</v-btn
       >
@@ -61,12 +60,11 @@ export default {
   data() {
     return {
       disable: true,
-      colors: ["#f2c627", "#ff7530", "#63eb4b", "#ff30c8", "#ff2b56"],
       databaseUid: this.$store.state.databaseUid,
     };
   },
   computed: {
-    ...mapGetters(["time", "dayFull", "week", "year", "stepper"]),
+    ...mapGetters(["colors","time", "dayFull", "week", "year", "stepper"]),
     bookings() {
       var t = {},
         counts = {},
@@ -140,7 +138,8 @@ export default {
           } // multiple of 2
         }
       });
-
+      
+      this.$store.commit('setBookingDetails', f);
       return f;
     },
   },
@@ -155,7 +154,6 @@ export default {
     },
     moveNext() {
       this.$store.commit("incrStepper");
-      console.log(this.$store.state.stepper);
     },
     dayIndexToString(dayIndex) {
       return this.dayFull[dayIndex - 1];
