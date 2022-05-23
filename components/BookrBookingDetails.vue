@@ -75,14 +75,22 @@ export default {
       const userEmail = this.$fire.auth.currentUser.email;
       console.log(userEmail);
 
+      let daysLength = Object.keys(this.details).length;
+      let bookingsStrList = Array(daysLength);
+      let bookingsMap = new Map();
+
       let uniqueDays = [];
       for (let key in this.details) {
+        let dayMonth = this.week[key - 1].split("/");
+        let year = this.year[key - 1];
+        let docUid = year + "-" + dayMonth[1] + "-" + dayMonth[0];
+
+        bookingsMap.set(docUid, []);
+
         for (const separateSlot of this.details[key]) {
           let startEndTimes = separateSlot.split("-");
-          let dayMonth = this.week[key - 1].split("/");
-          let year = this.year[key - 1];
 
-          let docUid = year + "-" + dayMonth[1] + "-" + dayMonth[0];
+          bookingsMap.get(docUid).push(separateSlot);
 
           // we need to set a field (in this case the date) firstly, otherwise the snapshots won't return the whole collections
           if (uniqueDays.indexOf(docUid) == -1) {
@@ -115,20 +123,50 @@ export default {
               month: parseInt(dayMonth[1]),
               year: parseInt(year),
             }).then((res) => {
-              // successful
-              // email is only sent when a booking is successfully made
-              this.$axios.$post('/api/mailer', {
-                email: userEmail
-              })
-              .then(_ => {
-                // when email is sent, move to the next step
-                this.moveNext();
-              })
-              .catch((err) => {
-                console.log("Err:", err);
-              });
+
             });
         }
+      }
+
+      let bookingIndex = 0;
+      console.log(bookingsMap);
+      bookingsMap.forEach((value, i) => {
+        console.log(value);
+        console.log(i);
+        console.log(bookingIndex);
+
+        bookingsStrList[bookingIndex] = "Day " + i + ": ";
+
+        value.forEach((v) => {
+          bookingsStrList[bookingIndex] += v + " ";
+        });
+
+        ++bookingIndex;
+      });
+
+
+      let bookingsStrJoined = String();
+      bookingsStrJoined = "Hi, this mail has been sent to you to confirm your recently made bookings. Please, see the bookings below: <br><br>";
+      bookingsStrList.forEach((element) => {
+        bookingsStrJoined += element;
+        bookingsStrJoined += "<br>";
+      });
+
+      bookingsStrJoined += "<br>Sincerely,<br><br> SPM Fudan Team.";
+
+      // Check if bookings have been made in order to send an email
+      if(uniqueDays.length > 0) {
+        this.$axios.$post('/api/mailer', {
+          email: userEmail,
+          content: bookingsStrJoined,
+          })
+          .then(_ => {
+            // when email is sent, move to the next step
+            this.moveNext();
+          })
+          .catch((err) => {
+            console.log("Err:", err);
+          });
       }
     }
   }

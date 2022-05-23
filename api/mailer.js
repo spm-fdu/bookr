@@ -23,8 +23,8 @@ app.post('/', async (req, res) => {
     const info = await transporter.sendMail({
         from: '"SPM Fudan" <spm.fudan@gmail.com>',
         to: req.body.email,
-        subject: "Booking confirmation",
-        text: "Hi, this mail has been sent to you to confirm your recently made bookings. Thank you.",
+        subject: "Bookr - Booking Confirmation",
+        html: req.body.content,
     });
 
     console.log("Message sent: %s", info.messageId);
