@@ -24,7 +24,7 @@
         <div class="text-left ml-16 mt-16">
           <span class="text-button">user: </span><span>{{ email }}</span>
           <v-spacer></v-spacer>
-          <span class="text-button">booking id: </span><span>#BOOKINGIDGOESHERE</span>
+          <span class="text-button">booking id: </span><span>{{ this.bookingId }}</span>
           <v-spacer></v-spacer>
           <span class="text-button">booking time: </span><span>{{ timestamp }}</span>
         </div>
@@ -66,7 +66,8 @@ export default {
   data () {
     return {
       snackbar: true,
-      timeout: 10, // 10 seconds 
+      timeout: 10, // 10 seconds
+      bookingId: this.randomId(),
     }
   },
   computed: {
@@ -81,8 +82,8 @@ export default {
       return new Date();
     }
     // async confirmation () {
-    //   // confirm that booking data has been successfully injected into the backend 
-    //   const bookingSnapshot = await this.$fire.firestore.collection("users").doc(this.$store.getters.databaseUid).collection("bookings").get() 
+    //   // confirm that booking data has been successfully injected into the backend
+    //   const bookingSnapshot = await this.$fire.firestore.collection("users").doc(this.$store.getters.databaseUid).collection("bookings").get()
     //   bookingSnapshot.forEach((bookingDate) => {
     //     console.log(bookingDate.data())
     //   })
@@ -93,6 +94,10 @@ export default {
       this.$router.go('/booking');
       // this.$store.commit('reset');
     },
+    randomId() {
+      const uint32 = window.crypto.getRandomValues(new Uint32Array(1))[0];
+      return uint32.toString(16);
+    }
   },
   watch: {
     stepper: {
