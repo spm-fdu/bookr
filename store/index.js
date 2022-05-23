@@ -5,7 +5,10 @@ export const state = () => ({
     fname: '',
     lname: '',
     email: '',
+    uid: '',
+    admin: null,
     authenticated: false,
+    lastSignInTime: '',
   },
   counter: 0,
   stepper: 1,
@@ -48,11 +51,13 @@ export const state = () => ({
   },
   dayShort: ['MON','TUE','WED','THU','FRI'],
   dayFull: ["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY"],
+  colors: ["#f2c627", "#ff7530", "#63eb4b", "#ff30c8", "#ff2b56"],
   week: [],
   year: [],
   timeslots: {}, // [],
   test: {},
-  databaseUid: ''
+  databaseUid: '',
+  bookingDetails: []
 })
 
 export const getters = {
@@ -76,6 +81,18 @@ export const getters = {
   },
   year: (state) => {
     return state.year
+  },
+  persisted: (state) => {
+    return state.persisted
+  },
+  databaseUid: (state) => {
+    return state.databaseUid
+  },
+  colors: (state) => {
+    return state.colors
+  },
+  bookingDetails: (state) => {
+    return state.bookingDetails
   }
 }
 
@@ -141,6 +158,14 @@ export const mutations = {
   },
   setDatabaseUid(state, uid) {
     state.databaseUid = uid;
+  },
+  setBookingDetails(state, payload) {
+    state.bookingDetails = payload;
+  },
+  reset(state, _) {
+    // invoked (manually or after time countdown) after booking is confirmed 
+    state.bookingDetails = [];
+    state.stepper = 1;
   }
 }
 export const strict = false
