@@ -34,7 +34,7 @@
       <v-row class="mt-10">
         <v-col cols="4" offset-md="8">
           <v-btn depressed class="mr-1" @click="moveBack()">modify</v-btn>
-          <v-btn depressed class="ml-1" @click="makeBooking(); moveNext();">confirm</v-btn>
+          <v-btn depressed class="ml-1" @click="makeBooking();">confirm</v-btn>
           <!-- <v-btn depressed class="ml-1" @click=" moveNext(); ">confirm</v-btn> -->
         </v-col>
       </v-row>
@@ -106,7 +106,17 @@ export default {
               year: parseInt(year),
             }).then((res) => {
               // successful 
-
+              // email is only sent when a booking is successfully made 
+              this.$axios.$post('/api/mailer', {
+                email: 'gerardmarcosfreixas@gmail.com'
+              })
+              .then(_ => {
+                // when email is sent, move to the next step 
+                this.moveNext();
+              })
+              .catch((err) => {
+                console.log("Err:", err);
+              })
             })
         }
       }
