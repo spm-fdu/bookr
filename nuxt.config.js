@@ -70,7 +70,7 @@ export default {
           messaging: true,
           performance: true,
           analytics: true,
-          remoteConfig: true
+          // remoteConfig: true
         },
         customEnv: false,
         onFireBaseHosting: false,
@@ -103,6 +103,8 @@ export default {
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
   },
+  
+  ssr: false,
 
   serverMiddleware: [
     '~/api/mailer'
