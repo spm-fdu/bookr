@@ -23,6 +23,7 @@
         class="ml-16 mr-16" 
         color="#3b47ec"
         @click:append="showPwd = !showPwd"
+        @keypress.enter="login()"
         ></v-text-field>
       <v-row>
         <v-col>
@@ -65,9 +66,9 @@ export default {
         pwd: '',
       },
       social: [
-        {
-          icon: 'mdi-facebook'
-        },
+        // {
+        //   icon: 'mdi-facebook'
+        // },
         {
           icon: 'mdi-google'
         }
@@ -122,45 +123,58 @@ export default {
         return true
       }
     },
-    login () {
+    async login () {
       this.spin = true; 
       // set persistence on auth; requires explicit sign out or token expiration 
-      /*this.$fire.auth.setPersistence(this.$fireModule.auth.Auth.Persistence.LOCAL).then(() => {
+      await this.$fire.auth.setPersistence(this.$fireModule.auth.Auth.Persistence.LOCAL).then(() => {
         this.$fire.auth.onAuthStateChanged((user) => {
           if (user) {
             // if login, retrieve name 
-            let displayName = user._delegate.displayName.split(' ');
-            const userInfo = {
-              fname: displayName[0],
-              lname: displayName[1],
-              email: user._delegate.email,
-              authenticated: true,
-            }
-
-            this.persist(userInfo);
+            let displayName = user._delegate.displayName !== null ? user._delegate.displayName.split(' ') : '';
             
-            // reroute
-            this.$router.push('/dashboard');
+            // retrieve user role 
+            this.$fire.firestore.collection("users").doc(user._delegate.uid).get().then((snapshot) => {
+              const userInfo = {
+                fname: displayName.length > 0 ? displayName[0] : '',
+                lname: displayName.length > 0 ? displayName[1] : '',
+                uid: user._delegate.uid,
+                email: user._delegate.email,
+                admin: snapshot.data()['admin'], 
+                authenticated: true,
+                lastSignInTime: user._delegate.metadata.lastSignInTime
+              }
+  
+              this.persist(userInfo);
+              this.$store.commit("setDatabaseUid", user._delegate.uid);
+              
+              if (this.$store.state.persisted.admin) {
+                this.$router.push('/admin');
+              } else {
+                // reroute
+                this.$router.push('/dashboard'); 
+              }
+            });
+
           } else {
             return this.$fire.auth.signInWithEmailAndPassword(this.credentials.uid, this.credentials.pwd).catch((e) => {
               this.labels.pwd = "The credentials you provided doesn't match the record of our database."
             });
           }
         })
-      })*/
+      })
 
-      this.$fire.auth.signInWithEmailAndPassword(this.credentials.uid, this.credentials.pwd)
-        .then((userCredential) => {
-          const user = userCredential.user;
-          console.log(user.email);
-          this.$store.commit("setDatabaseUid", user.uid);
-          console.log("Database uid is: ", this.$store.state.databaseUid);
-        })
-        .catch((error) => {
-          console.log(error.code, error.message);
-        });
+      // this.$fire.auth.signInWithEmailAndPassword(this.credentials.uid, this.credentials.pwd)
+      //   .then((userCredential) => {
+      //     const user = userCredential.user;
+      //     console.log(user.email);
+      //     this.$store.commit("setDatabaseUid", user.uid);
+      //     console.log("Database uid is: ", this.$store.state.databaseUid);
+      //   })
+      //   .catch((error) => {
+      //     console.log(error.code, error.message);
+      //   });
 
-      this.$router.push('/booking');
+      // this.$router.push('/dashboard');
 
       this.spin = false;
     },
