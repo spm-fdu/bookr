@@ -46,7 +46,7 @@
             </v-item>
             <v-item v-else>
               <v-sheet
-                class="pt-2 pb-2 text-center justify-center bookr__calendar_day"
+                class="pt-3 pb-3 text-center justify-center bookr__calendar_day align-center"
               >
                 <span style="font-weight: bold">{{ dayShort[i - 1] }}</span>
                 <span
