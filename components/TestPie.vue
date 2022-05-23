@@ -2,9 +2,9 @@
   <!-- <v-container fluid fill-height> -->
     <div>
       <v-row>
-        <v-card-text class="text-overline">Guanghua Building</v-card-text>
+        <v-card-text class="text-overline">{{ roomTitle }}</v-card-text>
       </v-row>
-      <v-divider class="py-2"></v-divider>
+      <v-divider class="ml-2 mr-2 py-2"></v-divider>
       <v-row class="pb-4" justify="center" align="center">
         <v-card elevation="0">
           <ccv-pie-chart :data='data' :options='options'></ccv-pie-chart>  
@@ -18,6 +18,10 @@
 export default {
   name: 'TestPie',
   props: {
+    roomTitle: {
+      type: String,
+      require: true
+    },
     data: {
       type: Array,
       require: true
