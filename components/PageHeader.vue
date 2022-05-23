@@ -6,7 +6,7 @@
           <h1 class="text-left pt-5 pl-16 font-weight-black">
             <nuxt-link to="/" class="text-decoration-none" style="color:black">
             fdu//bookr.</nuxt-link>
-            <v-chip label v-if="persisted.admin" class="text-overline">admin</v-chip>
+            <v-chip label small v-if="persisted.admin" class="text-overline" color="indigo" text-color="white">admin</v-chip>
             <!-- <v-chip label v-else-if="!persisted.admin">user</v-chip> -->
           </h1>
         <!-- </nuxt-link> -->
