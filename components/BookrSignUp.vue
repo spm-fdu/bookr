@@ -1,31 +1,145 @@
 <template>
   <v-card
-    elevation="1"
-    class="pa-4 rounded justify-center"
-    width="500"
-    height="650"
-    max-width="500"
+    elevation="2"
+    class="pa-12 pb-6 ml-10 rounded-xl justify-center align-center"
+    max-width="650px"
   >
-    <v-card-title class="signup__title justify-center font-weight-bold">{{
-      title
-    }}</v-card-title>
+    <v-card-title class="signup__title justify-center font-weight-bold">{{ title }}</v-card-title>
     <v-spacer class="ma-6"></v-spacer>
-    <!-- <v-card-subtitle class="pt-2 mb-4">{{ subtitle }}</v-card-subtitle> -->
 
-    <v-text-field
-      v-model="credentials.uid"
-      :label="labels.uid"
-      :rules="[required, validateEmailPhone]"
-      outlined
-      :loading="spin"
-      class="ml-16 mr-16"
-      color="#3b47ec"
-    ></v-text-field>
+    <div v-show="verification.phone.sent" class="text-center pa-4">
+      <v-otp-input v-model="verification.phone.otp" length="6" type="number" class="pa-10"></v-otp-input>
+      <div id="recaptcha-container" class="ma-10"></div>
+      <v-btn depressed class="text-overline" @click="verifyOTP(verification.phone.otp)">submit</v-btn>
+    </div>
+
+    <v-snackbar v-model="snackbar" timeout="-1" top>
+      Account created successfully! Redirecting to login page...
+    </v-snackbar>
+
+
+    <!-- Sign Up Information -->
+    <div v-show="!verification.phone.sent">
+      <v-row class="d-flex flex-wrap ma-0">
+        <v-col sm="12" md="12" lg="6" class="pt-0">
+          <v-card-text class="pt-0">First Name</v-card-text>
+          <v-text-field
+            dense 
+            v-model="user.fname"
+            :rules="[required]"
+            outlined
+            class="rounded-lg"
+            color="#3b47ec"
+          >
+          </v-text-field>
+        </v-col>
+        <v-col sm="12" md="12" lg="6" class="pt-0">
+          <v-card-text class="pt-0">Last Name</v-card-text>
+          <v-text-field
+            dense 
+            v-model="user.lname"
+            :rules="[required]"
+            outlined
+            class="rounded-lg"
+            color="#3b47ec"
+          >
+          </v-text-field>
+        </v-col>
+      </v-row>
+
+      <v-row class="d-flex flex-wrap ma-0">
+        <v-col sm="12" md="12" lg="6" class="pt-0">
+          <v-card-text class="pt-0">Email</v-card-text>
+          <v-text-field
+            dense 
+            v-model="user.uid"
+            :rules="[required, validateEmailPhone]"
+            outlined
+            :loading="spin"
+            class="rounded-lg"
+            color="#3b47ec"
+          ></v-text-field>
+        </v-col>
+        <v-col sm="12" md="12" lg="6" class="pt-0">
+            <v-card-text class="v-card__text pt-0">Phone Number (optional)
+              <v-tooltip right>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn fab depressed plain v-bind="attrs" v-on="on" x-small style="width:18px; height:18px; fontsize:0.625rem;"><v-icon>mdi-information-outline</v-icon></v-btn>
+                </template>
+                <span>Requires verification</span>
+              </v-tooltip>
+            </v-card-text>
+          <v-text-field v-model="user.hp" dense outlined class="rounded-lg"></v-text-field>
+        </v-col>
+      </v-row>
+
+      <v-row class="d-flex flex-wrap ma-0">
+        <v-col sm="12" md="12" lg="6" class="pt-0 pb-0">
+          <v-card-text class="pt-0">Password</v-card-text>
+          <v-text-field
+            dense
+            v-model="user.pwd"
+            :append-icon="showPwd ? 'mdi-eye' : 'mdi-eye-off'"
+            :type="showPwd ? 'text' : 'password'"
+            :rules="[required, validatePasswordLength]"
+            outlined
+            :loading="spin"
+            class="rounded-lg"
+            color="#3b47ec"
+            @click:append="showPwd = !showPwd"
+          ></v-text-field>
+        </v-col>
+        <v-col sm="12" md="12" lg="6" class="pt-0 pb-0">
+          <v-card-text class="pt-0">Gender (optional)</v-card-text>
+          <v-btn-toggle group color="#3b47ec" v-model="user.gender">
+            <v-btn x-small outlined fab color="blue" value="m"><v-icon>mdi-gender-male</v-icon></v-btn>
+            <v-btn x-small outlined fab color="pink" value="f"><v-icon>mdi-gender-female</v-icon></v-btn>
+          </v-btn-toggle>
+        </v-col>
+      </v-row>
+
+      <v-card-text class="login__reset pt-0">
+        <v-row>
+          <v-col>
+            <nuxt-link to="/login" class="text-left text-overline text-decoration-none">Already have an account? </nuxt-link>
+          </v-col>
+          <v-col></v-col>
+        </v-row>
+      </v-card-text>
+    
+      <div class="text-center mt-6">
+        <v-btn
+          depressed
+          class="pl-16 pr-16"
+          :disabled="disabled.all || disabled.email || disabled.pwd "
+          @click="createUser()"
+          >Create Account</v-btn
+        >
+      </div>
+
+      <!-- <v-spacer class="mb-2"></v-spacer> -->
+      <v-divider class="signup__short_divider"></v-divider>
+
+      <div class="text-center">
+        <v-btn
+          fab
+          depressed
+          x-small
+          class="ml-4 mr-4"
+          v-for="(i, index) in social"
+          :key="index"
+          @click="signUpThirdParty(index)"
+        >
+          <v-icon>{{ i.icon }}</v-icon>
+        </v-btn>
+      </div>
+    </div>
 
     <!-- <v-card-text class="signup__reset ma-0 pr-16 pa-0 text-right" @click="resetPassword()" ><a class="text-overline">Forget password?</a></v-card-text> -->
-    <v-spacer class="mb-2"></v-spacer>
 
-    <v-dialog transition="dialog-bottom-transition" max-width="600">
+
+
+    <!-- <v-dialog transition="dialog-bottom-transition" max-width="600">
       <template v-slot:activator="{ on, attrs }">
         <v-btn
           depressed
@@ -116,9 +230,9 @@
           </v-card-actions>
         </v-card>
       </template>
-    </v-dialog>
+    </v-dialog> -->
 
-    <v-spacer class="mb-8"></v-spacer>
+    <!-- <v-spacer class="mb-8"></v-spacer>
 
     <v-dialog transition="dialog-bottom-transition" max-width="600">
       <template v-slot:activator="{ on, attrs }">
@@ -156,34 +270,38 @@
           </v-card-actions>
         </v-card>
       </template>
-    </v-dialog>
+    </v-dialog> -->
 
-    <v-divider class="signup__short_divider"></v-divider>
+    <!-- <template fill-height>
+      <v-row>
+        <v-col cols="4" justify="center" align="center">
+          <v-divider class="text-center"></v-divider>
+        </v-col>
+        <v-col cols="4">
 
-    <v-btn
-      fab
-      depressed
-      x-small
-      class="ml-4 mr-4"
-      v-for="(i, index) in social"
-      :key="index"
-      @click="signUpThirdParty(index)"
-    >
-      <v-icon>{{ i.icon }}</v-icon>
-    </v-btn>
+          <v-card-text>or you can sign up</v-card-text>
+        </v-col>
+        <v-col cols="4">
+
+        </v-col>
+      </v-row>
+    </template> -->
+    
   </v-card>
 </template>
 
 <script>
-import {
-  getAuth,
-  RecaptchaVerifier,
-  signInWithPhoneNumber,
-  sendPasswordResetEmail,
-} from "firebase/auth";
+// import {
+//   getAuth,
+//   RecaptchaVerifier,
+//   signInWithPhoneNumber,
+//   sendPasswordResetEmail,
+// } from "firebase/auth";
+
+// firebase.auth.getAuth === this.$fire.auth._delegate 
 
 export default {
-  name: "SignUp",
+  name: "BookrSignUp",
   data() {
     return {
       title: "Sign Up",
@@ -192,11 +310,21 @@ export default {
         pwd: "Password",
         ver_code: "Verification code",
       },
-      credentials: {
-        uid: "",
-        pwd: "",
-        ver_code: "",
+      user: {
+        fname: '',
+        lname: '',
+        uid: '', // email 
+        pwd: '',
+        hp: null, // phone number 
+        gender: null,
       },
+      verification: {
+        phone: {
+          sent: false,
+          otp: null
+        }
+      },
+      verificationCodeSent: false, 
       email_verification: {
         uid: "",
       },
@@ -206,7 +334,7 @@ export default {
         },
       ],
       disabled: {
-        both: true,
+        all: true,
         email: true,
         pwd: true,
         email_send_password: true,
@@ -217,15 +345,32 @@ export default {
       },
       showPwd: false,
       spin: false,
+      snackbar: false,
+      timeout: 10
     };
   },
+  // watch: {
+  //   snackbar: {
+  //     handler (v) {
+  //       if (v) {
+  //         setInterval(() => {
+  //           if (this.timeout > 0) {
+
+  //           }
+  //         }, 1000)
+  //         this.$router.push("/login")
+  //       }
+  //     },
+  //     immediate: true
+  //   }
+  // },
   methods: {
     required(value) {
       if (!value) {
-        this.disabled.both = true;
+        this.disabled.all = true;
         return "Required";
       } else {
-        this.disabled.both = false;
+        this.disabled.all = false;
         return true;
       }
     },
@@ -284,35 +429,42 @@ export default {
       }
       return "none";
     },
-    signUpEmail() {
-      this.$fire.auth
-        .createUserWithEmailAndPassword(
-          this.credentials.uid,
-          this.credentials.pwd
-        )
-        .then((result) => {
-          const user = result.user;
-          console.log(user);
+    async createUser() {
+      await this.$fire.auth.createUserWithEmailAndPassword(this.user.uid, this.user.pwd)
+      .then((res) => {
+        // verifies mobile number 
 
-          this.$fire.firestore.collection("users").doc(user.uid).set({ admin: false });
+        if (this.user.hp) { 
+          // show captcha 
+          window.applicationVerifier = new this.$fireModule.auth.RecaptchaVerifier('recaptcha-container');
 
-          this.$store.commit("setDatabaseUid", user.uid);
+          // this.verification.phone.sent = true;
+          this.sendPhoneVerificationCode(this.user.hp) 
+        }
 
-          console.log("Database uid is: ", this.$store.state.databaseUid); // TODO: Use persistent instead
+        // when successfully created 
+        var userProfile = { displayName: `${this.user.fname} ${this.user.lname}` }
 
-          this.$router.push('/booking');
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+        this.$fire.firestore.collection("users").doc(res.user._delegate.uid).set({ 'admin': false })
+
+        res.user.updateProfile(userProfile)
+        this.snackbar = true;
+
+        setTimeout(() => {
+          this.$router.push('/login')
+        }, 5000)
+
+      }).catch((e) => {
+        console.log('Failed to update profile');
+        console.log(`Error message: ${e}`);
+        alert(`An unexpected error has occured: ${e}`)
+        this.$router.go("/signup")
+      });
+      ;
     },
-    async sendPhoneVerificationCode() {
-      const auth = getAuth();
-      const phoneNumber = this.credentials.uid;
-      console.log(phoneNumber);
-      const appVerifier = window.recaptchaVerifier;
-
-      signInWithPhoneNumber(auth, phoneNumber, appVerifier)
+    async sendPhoneVerificationCode(mobile) {
+      this.verification.phone.sent = true;
+      this.$fire.auth.signInWithPhoneNumber(mobile, window.applicationVerifier)
         .then((confirmationResult) => {
           window.confirmationResult = confirmationResult;
         })
@@ -320,8 +472,27 @@ export default {
           console.log(err);
         });
     },
-    async signUpMobile() {
-      const code = this.credentials.ver_code;
+    verifyOTP(otp) {
+      window.confirmationResult.confirm(otp)
+        .then(() => {
+          // verified 
+          this.verification.phone.sent = false;
+
+          // force relogout and ask user to login again
+          this.$fire.auth.signOut(this.$fire.auth).then(() => {
+            this.clearPersist();
+            this.$router.push('/login');
+          }).catch((e) => {
+            console.log('Sign out failed.');
+            console.log(`Error message: ${e}`);
+          })
+        }).catch((e) => {
+          console.log('Failed to verify phone number.')
+          console.log(`Error message: ${e}`)
+        });
+    },
+    signUpMobile() {
+      const code = this.$self.credentials.ver_code;
       console.log(code);
       window.confirmationResult
         .confirm(code)
@@ -370,11 +541,11 @@ export default {
       }
     },
     showCaptcha() {
-      const auth = getAuth();
+      // const auth = getAuth();
       window.recaptchaVerifier = new RecaptchaVerifier(
         "recaptcha-container",
         {},
-        auth
+        this.$fireModule.auth.getAuth()
       );
     },
     sendPasswordReset(email) {
@@ -417,6 +588,6 @@ export default {
   color: #3b47ec;
 }
 .signup__short_divider {
-  margin: 45px 100px 45px 100px;
+  margin: 3vh 70px 2.5vh 70px;
 }
 </style>

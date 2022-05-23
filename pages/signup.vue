@@ -1,10 +1,10 @@
 <template>
-  <v-container fluid fill-height class="bookr__signup ml-8 mr-8">
+  <v-container fluid class="bookr__signup ml-8 mr-8 mt-16 mb-16">
     <v-row class="text-center justify-center align-center">
-      <v-col cols="7">
-        <img src="../static/signup.svg" :style="`pointer-events:none`"/>
+      <v-col cols="5">
+        <img src="../static/join.svg" :style="`pointer-events:none`"/>
       </v-col>
-      <v-col cols="5" >
+      <v-col cols="5">
         <bookr-sign-up></bookr-sign-up>
       </v-col>
     </v-row>
@@ -18,6 +18,7 @@ export default {
   components: {
     BookrSignUp
   },
+  middleware: 'authenticated'
 };
 </script>
 
