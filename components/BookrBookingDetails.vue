@@ -1,6 +1,6 @@
 <template>
   <div align="center" justify="center" class="mt-16">
-    <v-card flat fill-height outlined class="pa-16" max-width="65vw"> 
+    <v-card flat fill-height outlined class="pa-16" max-width="65vw">
       <v-row>
         <v-col><h5>Slots No.</h5></v-col>
         <v-col><h5>Day of Week</h5></v-col>
@@ -47,6 +47,11 @@ import { mapGetters } from 'vuex';
 
 export default {
   name: 'BookrBookingDetails',
+  data() {
+    return {
+      databaseUid: this.$store.state.databaseUid,
+    }
+  },
   computed: {
     ...mapGetters(['colors','dayFull','week','year','stepper']),
     details () {
@@ -65,6 +70,7 @@ export default {
     },
     makeBooking () {
       console.log(this.details);
+      console.log(this.databaseUid);
       let uniqueDays = [];
       for (let key in this.details) {
         for (const separateSlot of this.details[key]) {
@@ -105,19 +111,19 @@ export default {
               month: parseInt(dayMonth[1]),
               year: parseInt(year),
             }).then((res) => {
-              // successful 
-              // email is only sent when a booking is successfully made 
+              // successful
+              // email is only sent when a booking is successfully made
               this.$axios.$post('/api/mailer', {
                 email: 'gerardmarcosfreixas@gmail.com'
               })
               .then(_ => {
-                // when email is sent, move to the next step 
+                // when email is sent, move to the next step
                 this.moveNext();
               })
               .catch((err) => {
                 console.log("Err:", err);
-              })
-            })
+              });
+            });
         }
       }
     }
