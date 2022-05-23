@@ -16,7 +16,7 @@
         </h4>
       </v-col>
       <v-col class="text-center mt-6">
-        <nuxt-link :key="$router.fullPath" to="login">
+        <nuxt-link :key="$router.fullPath" to="booking">
           <v-btn depressed outlined rounded class="pl-9 pr-9" color="#3b47ec">
             reserve
           </v-btn>
@@ -28,11 +28,14 @@
 
 <script>
 export default {
-  mounted () {
-    if (this.$store.state.persisted.authenticated) {
-      this.$router.push('/dashboard');
+  // middleware: 'authenticated',
+  middleware ({ store, redirect }) {
+    if (store.getters.persisted.authenticated) {
+      return redirect('/dashboard');
+    } else {
+      return Promise.resolve()
     }
-  }
+  },
 }
 </script>
 
