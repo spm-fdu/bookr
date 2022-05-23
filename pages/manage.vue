@@ -34,7 +34,7 @@
                 </template>
               </v-data-table> -->
             </v-tab-item>
-            <v-btn depressed class="mr-1" @click="getBookingsData()">get bookings</v-btn>
+            <v-btn depressed class="mr-1" @click="getBookingsData();">get bookings</v-btn>
             <!-- history bookings -->
             <v-tab-item value="history">
 
@@ -176,7 +176,22 @@ export default {
             const bookingDayRef = bookings.ref.collection("data").get().then((bookingDaySnapshot) => {
               bookingDaySnapshot.forEach((booking) => {
                 console.log(booking.id, " => ", booking.data());
-                bookingsList.push(booking.data());
+                let newData = new Map(Object.entries(booking.data()));
+
+                newData.set("no", 1);
+                newData.set("id", "#12346");
+                newData.set("location", "Room #001");
+                newData.set("status", "booked");
+                let date = newData.get("year") + "-" + newData.get("month") + "-" + newData.get("dayNumber");
+                newData.set("date", date);
+
+                newData.delete("year");
+                newData.delete("month");
+                newData.delete("dayNumber");
+                newData.delete("day");
+
+                console.log(newData);
+                bookingsList.push(newData);
               });
             });
           });
