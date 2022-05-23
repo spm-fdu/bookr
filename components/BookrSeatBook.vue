@@ -159,50 +159,6 @@ export default {
       return this.dayFull[dayIndex - 1];
     },
     sendBookingsToDatabase() {
-      /*let uniqueDays = [];
-      for (let key in this.bookings) {
-        for (const separateSlot of this.bookings[key]) {
-          let startEndTimes = separateSlot.split("-");
-          let dayMonth = this.week[key - 1].split("/");
-          let year = this.year[key - 1];
-
-          let docUid = year + "-" + dayMonth[1] + "-" + dayMonth[0];
-
-          if(uniqueDays.indexOf(docUid) == -1) {
-            uniqueDays.push(docUid);
-          }
-
-          this.$fire.firestore
-            .collection("users")
-            .doc(this.databaseUid)
-            .collection("bookings")
-            .doc()
-            .set({
-              // TODO: convert to timestamp
-              date: docUid,
-            });
-
-          this.$fire.firestore
-            .collection("users")
-            .doc(this.databaseUid)
-            .collection("bookings")
-            //TODO FORE ACH DOC.doc(docUid)
-            .doc(docUid)
-            .collection("data")
-            .doc()
-            .set({
-              start: startEndTimes[0],
-              end: startEndTimes[1],
-              day: this.dayIndexToString(parseInt(key)),
-              dayNumber: parseInt(dayMonth[0]),
-              month: parseInt(dayMonth[1]),
-              year: parseInt(year),
-            });
-        }
-      }
-
-      console.log(uniqueDays);*/
-
       let uniqueDays = [];
       for (let key in this.bookings) {
         for (const separateSlot of this.bookings[key]) {
@@ -244,6 +200,17 @@ export default {
             });
         }
       }
+    },
+    async sendMail() {
+      await this.$axios.$post('/api/mailer', {
+        email: 'gerardmarcosfreixas@gmail.com'
+      })
+      .then((res) => {
+
+      })
+      .catch((err) => {
+        console.log("Err:", err);
+      })
     },
   },
 };
