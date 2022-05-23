@@ -9,9 +9,9 @@ export default {
   },
   
   mounted () {
-    console.log('logging out...')
     this.$fire.auth.signOut(this.$fire.auth).then(() => {
       this.clearPersist();
+      if (process.client) { localStorage.removeItem('vuex') }
       this.$router.push('/');
     }).catch((e) => {
       console.log('Sign out failed.');
