@@ -75,6 +75,9 @@ export default {
       const userEmail = this.$fire.auth.currentUser.email;
       console.log(userEmail);
 
+      const userUid = this.$fire.auth.currentUser.uid;
+      console.log(userUid);
+
       let daysLength = Object.keys(this.details).length;
       let bookingsStrList = Array(daysLength);
       let bookingsMap = new Map();
@@ -98,7 +101,7 @@ export default {
 
             this.$fire.firestore
               .collection("users")
-              .doc(this.databaseUid)
+              .doc(userUid)
               .collection("bookings")
               .doc(docUid) // we can previously generate and store a unique uid to be used after
               .set({
@@ -110,7 +113,7 @@ export default {
 
           this.$fire.firestore
             .collection("users")
-            .doc(this.databaseUid)
+            .doc(userUid)
             .collection("bookings")
             .doc(docUid)
             .collection("data")

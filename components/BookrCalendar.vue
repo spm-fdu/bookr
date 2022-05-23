@@ -132,7 +132,7 @@ export default {
         let p = t.getDate() + "/" + (t.getMonth() + 1);
         // t = t.split(' ').slice(0,2);
         week.push(p);
-        year.push(y); 
+        year.push(y);
         current.setDate(current.getDate() + 1);
       }
       this.$store.commit("setWeek", week);
@@ -197,7 +197,7 @@ export default {
     },
     async fetchData() {
       // TODO we should get user data with persistent and before that, via set with onAuthStateChanged(...args)
-      const uid = this.$store.state.databaseUid;
+      const uid = this.$fire.auth.currentUser.uid;
       console.log(uid);
 
       const ref = await this.$fire.firestore

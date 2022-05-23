@@ -24,7 +24,7 @@
         <v-col sm="12" md="12" lg="6" class="pt-0">
           <v-card-text class="pt-0">First Name</v-card-text>
           <v-text-field
-            dense 
+            dense
             v-model="user.fname"
             :rules="[required]"
             outlined
@@ -36,7 +36,7 @@
         <v-col sm="12" md="12" lg="6" class="pt-0">
           <v-card-text class="pt-0">Last Name</v-card-text>
           <v-text-field
-            dense 
+            dense
             v-model="user.lname"
             :rules="[required]"
             outlined
@@ -51,7 +51,7 @@
         <v-col sm="12" md="12" lg="6" class="pt-0">
           <v-card-text class="pt-0">Email</v-card-text>
           <v-text-field
-            dense 
+            dense
             v-model="user.uid"
             :rules="[required, validateEmailPhone]"
             outlined
@@ -106,7 +106,7 @@
           <v-col></v-col>
         </v-row>
       </v-card-text>
-    
+
       <div class="text-center mt-6">
         <v-btn
           depressed
@@ -286,7 +286,7 @@
         </v-col>
       </v-row>
     </template> -->
-    
+
   </v-card>
 </template>
 
@@ -298,7 +298,7 @@
 //   sendPasswordResetEmail,
 // } from "firebase/auth";
 
-// firebase.auth.getAuth === this.$fire.auth._delegate 
+// firebase.auth.getAuth === this.$fire.auth._delegate
 
 export default {
   name: "BookrSignUp",
@@ -313,9 +313,9 @@ export default {
       user: {
         fname: '',
         lname: '',
-        uid: '', // email 
+        uid: '', // email
         pwd: '',
-        hp: null, // phone number 
+        hp: null, // phone number
         gender: null,
       },
       verification: {
@@ -324,7 +324,7 @@ export default {
           otp: null
         }
       },
-      verificationCodeSent: false, 
+      verificationCodeSent: false,
       email_verification: {
         uid: "",
       },
@@ -432,17 +432,17 @@ export default {
     async createUser() {
       await this.$fire.auth.createUserWithEmailAndPassword(this.user.uid, this.user.pwd)
       .then((res) => {
-        // verifies mobile number 
+        // verifies mobile number
 
-        if (this.user.hp) { 
-          // show captcha 
+        if (this.user.hp) {
+          // show captcha
           window.applicationVerifier = new this.$fireModule.auth.RecaptchaVerifier('recaptcha-container');
 
           // this.verification.phone.sent = true;
-          this.sendPhoneVerificationCode(this.user.hp) 
+          this.sendPhoneVerificationCode(this.user.hp)
         }
 
-        // when successfully created 
+        // when successfully created
         var userProfile = { displayName: `${this.user.fname} ${this.user.lname}` }
 
         this.$fire.firestore.collection("users").doc(res.user._delegate.uid).set({ 'admin': false })
@@ -475,7 +475,7 @@ export default {
     verifyOTP(otp) {
       window.confirmationResult.confirm(otp)
         .then(() => {
-          // verified 
+          // verified
           this.verification.phone.sent = false;
 
           // force relogout and ask user to login again
@@ -501,10 +501,6 @@ export default {
           console.log(user);
 
           this.$fire.firestore.collection("users").doc(user.uid).set({});
-
-          this.$store.commit("setDatabaseUid", user.uid);
-
-          console.log("Database uid is: ", this.$store.state.databaseUid);
 
           this.$router.push('/booking');
         })

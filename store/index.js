@@ -85,9 +85,6 @@ export const getters = {
   persisted: (state) => {
     return state.persisted
   },
-  databaseUid: (state) => {
-    return state.databaseUid
-  },
   colors: (state) => {
     return state.colors
   },
@@ -117,8 +114,8 @@ export const mutations = {
       authenticated: false,
     }
   },
-  updateHistory (state, mode) { 
-    state.counter += 1; 
+  updateHistory (state, mode) {
+    state.counter += 1;
     state.history.push({
       'counter': state.counter,
       'mode': mode,
@@ -134,12 +131,12 @@ export const mutations = {
     state.id = id
   },
   setTimeslots (state, timeslot) {
-    // if we use dictionary 
+    // if we use dictionary
     Object.keys(timeslot).forEach((key) => {
       Vue.set(state.timeslots, key, timeslot[key])
     })
 
-    // state.timeslots.push(timeslot); 
+    // state.timeslots.push(timeslot);
 
   },
   removeTimeslots (state, timeslot) {
@@ -156,14 +153,11 @@ export const mutations = {
   setYear(state, year) {
     state.year = year;
   },
-  setDatabaseUid(state, uid) {
-    state.databaseUid = uid;
-  },
   setBookingDetails(state, payload) {
     state.bookingDetails = payload;
   },
   reset(state, _) {
-    // invoked (manually or after time countdown) after booking is confirmed 
+    // invoked (manually or after time countdown) after booking is confirmed
     state.bookingDetails = [];
     state.stepper = 1;
   }

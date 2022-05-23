@@ -124,34 +124,33 @@ export default {
       }
     },
     async login () {
-      this.spin = true; 
-      // set persistence on auth; requires explicit sign out or token expiration 
+      this.spin = true;
+      // set persistence on auth; requires explicit sign out or token expiration
       await this.$fire.auth.setPersistence(this.$fireModule.auth.Auth.Persistence.LOCAL).then(() => {
         this.$fire.auth.onAuthStateChanged((user) => {
           if (user) {
-            // if login, retrieve name 
+            // if login, retrieve name
             let displayName = user._delegate.displayName !== null ? user._delegate.displayName.split(' ') : '';
-            
-            // retrieve user role 
+
+            // retrieve user role
             this.$fire.firestore.collection("users").doc(user._delegate.uid).get().then((snapshot) => {
               const userInfo = {
                 fname: displayName.length > 0 ? displayName[0] : '',
                 lname: displayName.length > 0 ? displayName[1] : '',
                 uid: user._delegate.uid,
                 email: user._delegate.email,
-                admin: snapshot.data()['admin'], 
+                admin: snapshot.data()['admin'],
                 authenticated: true,
                 lastSignInTime: user._delegate.metadata.lastSignInTime
               }
-  
+
               this.persist(userInfo);
-              this.$store.commit("setDatabaseUid", user._delegate.uid);
-              
+
               if (this.$store.state.persisted.admin) {
                 this.$router.push('/admin');
               } else {
                 // reroute
-                this.$router.push('/dashboard'); 
+                this.$router.push('/dashboard');
               }
             });
 
@@ -167,7 +166,6 @@ export default {
       //   .then((userCredential) => {
       //     const user = userCredential.user;
       //     console.log(user.email);
-      //     this.$store.commit("setDatabaseUid", user.uid);
       //     console.log("Database uid is: ", this.$store.state.databaseUid);
       //   })
       //   .catch((error) => {
@@ -199,10 +197,6 @@ export default {
               console.log(user);
 
               this.$fire.firestore.collection("users").doc(user.uid).set({});
-
-              this.$store.commit("setDatabaseUid", user.uid);
-
-              console.log("Database uid is: ", this.$store.state.databaseUid);
 
               this.$router.push('/booking');
             })
