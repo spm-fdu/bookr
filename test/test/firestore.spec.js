@@ -189,8 +189,8 @@ describe("make bookings", () => {
     const unauthenticated = getAuthedFirestore(null);
     const user = getAuthedFirestore(genericAuth);
     var slotAvailability = (await unauthenticated.collection("rooms").doc("GHB213").collection("2022-01-01").doc("10").get()).data().availability;
-    console.log(unauthenticated._delegate._credentials.auth)
-    console.log(user._delegate._credentials.auth)
+    // console.log(unauthenticated._delegate._credentials.auth)
+    // console.log(user._delegate._credentials.auth)
     // const bookingData = {
     //   day: "Tuesday",
     //   dayNumber: 3,
