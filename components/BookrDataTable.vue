@@ -39,7 +39,7 @@
 
     <template v-slot:item.action="{ item }">
       <!-- admin cannot reschedule for user, only user able to do so -->
-      <v-btn color="primary" depressed class="mr-1" @click="setCheckIn(item)">Check In</v-btn>
+      <v-btn color="primary" depressed class="mr-1" @click="setCheckIn(item)" :disabled="disableButton(item.status)">Check In</v-btn>
       <v-btn small outlined color="indigo" @click="editItem(item)" :disabled="disableButton(item.status)" v-show="!$store.state.persisted.admin">
         edit
       </v-btn>
