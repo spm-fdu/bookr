@@ -135,8 +135,6 @@ export default {
       }
     },
     async getBookingsData() {
-      let bookingsList = [];
-
       const userUid = this.$fire.auth.currentUser.uid;
       const ref = await this.$fire.firestore
         .collection("users")
@@ -146,7 +144,8 @@ export default {
         .then((bookingsSnapshot) => {
           bookingsSnapshot.forEach((bookings) => {
             const bookingDayRef = bookings.ref.collection("data").get().then((bookingDaySnapshot) => {
-              bookingDaySnapshot.forEach((booking) => {
+              bookingDaySnapshot.forEach((booking, index) => {
+                console.log(index);
                 console.log(booking.id, " => ", booking.data());
                 let newData = new Map(Object.entries(booking.data()));
 
@@ -171,8 +170,6 @@ export default {
             });
           });
         });
-
-      return bookingsList;
     },
   },
   created () {
