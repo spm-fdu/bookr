@@ -151,8 +151,6 @@ export default {
           bookingsSnapshot.forEach((bookings) => {
             const bookingDayRef = bookings.ref.collection("data").get().then((bookingDaySnapshot) => {
               bookingDaySnapshot.forEach((booking, index) => {
-                console.log(index);
-                console.log(booking.id, " => ", booking.data());
                 let newData = new Map(Object.entries(booking.data()));
 
                 newData.set("location", "Room #001");
@@ -165,10 +163,7 @@ export default {
                 newData.delete("dayNumber");
                 newData.delete("day");
 
-                console.log(newData);
-
                 let newDataObj = Object.fromEntries(newData);
-                console.log(newDataObj);
 
                 this.data.push(newDataObj);
               });
