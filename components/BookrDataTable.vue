@@ -194,6 +194,23 @@ export default {
                 });
               });
           });
+
+          const ref2 = await this.$fire.firestore
+            .collection("users")
+            .doc(userUid)
+            .collection("bookings")
+            .doc(item.date)
+            .collection("data")
+            .where("start", "==", item.start)
+            .get()
+            .then((snap) => {
+              snap.forEach((doc) => {
+                console.log(doc.id, " => ", doc.data());
+                doc.ref.update({
+                  status: "Checked In",
+                });
+              });
+          });
         }
       }
     },
