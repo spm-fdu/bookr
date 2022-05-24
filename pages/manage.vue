@@ -101,7 +101,7 @@ export default {
           // sortable: false
         },
       ],
-      data: this.getBookingsData(),
+      data: [],
       booking: null,
     }
   },
@@ -134,11 +134,11 @@ export default {
         return false
       }
     },
-    getBookingsData() {
+    async getBookingsData() {
       let bookingsList = [];
 
       const userUid = this.$fire.auth.currentUser.uid;
-      const ref = this.$fire.firestore
+      const ref = await this.$fire.firestore
         .collection("users")
         .doc(userUid)
         .collection("bookings")
@@ -151,7 +151,6 @@ export default {
                 let newData = new Map(Object.entries(booking.data()));
 
                 newData.set("no", 1);
-                newData.set("id", "#12346");
                 newData.set("location", "Room #001");
                 newData.set("status", "booked");
                 let date = newData.get("year") + "-" + newData.get("month") + "-" + newData.get("dayNumber");
@@ -163,7 +162,11 @@ export default {
                 newData.delete("day");
 
                 console.log(newData);
-                bookingsList.push(newData);
+
+                let newDataObj = Object.fromEntries(newData);
+                console.log(newDataObj);
+
+                this.data.push(newDataObj);
               });
             });
           });

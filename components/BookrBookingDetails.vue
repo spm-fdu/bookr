@@ -131,7 +131,7 @@ export default {
               year: parseInt(year),
               checkin: false,
               booked: true,
-              ref: this.randomRef(),
+              id: this.randomRef(),
             }).then((res) => {
 
             });
