@@ -145,25 +145,44 @@ export default {
         });
     },
     async setCheckIn(item) {
-      let newCheckin = item.checkin;
+      const today = new Date();
+      console.log(today);
+      var dd = String(today.getDate());
+      var mm = String(today.getMonth() + 1);
+      var yyyy = today.getFullYear();
+      let todayDate = yyyy + '-' + mm + '-' + dd;
+      console.log(todayDate);
 
-      const userUid = this.$fire.auth.currentUser.uid;
-      const ref = await this.$fire.firestore
-        .collection("users")
-        .doc(userUid)
-        .collection("bookings")
-        .doc(item.date)
-        .collection("data")
-        .where("start", "==", item.start)
-        .get()
-        .then((snap) => {
-          snap.forEach((doc) => {
-            console.log(doc.id, " => ", doc.data());
-            doc.ref.update({
-              checkin: newCheckin,
+      var hoursMinutesToday = String(today.getHours()) + ':' + String(today.getMinutes());
+      console.log(hoursMinutesToday);
+
+      const bookingDate = item.date;
+      console.log(bookingDate);
+
+      const hoursMinutesBooking = item.start;
+      console.log(hoursMinutesBooking);
+
+      if(today == bookingDate) {
+        let newCheckin = item.checkin;
+
+        const userUid = this.$fire.auth.currentUser.uid;
+        const ref = await this.$fire.firestore
+          .collection("users")
+          .doc(userUid)
+          .collection("bookings")
+          .doc(item.date)
+          .collection("data")
+          .where("start", "==", item.start)
+          .get()
+          .then((snap) => {
+            snap.forEach((doc) => {
+              console.log(doc.id, " => ", doc.data());
+              doc.ref.update({
+                checkin: newCheckin,
+              });
             });
-          });
         });
+      }
     },
     async getBookingsData() {
       this.data = [];
