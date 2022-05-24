@@ -114,7 +114,7 @@ export default {
               });
           }
           // console.log(startEndTimes, dayMonth, year, docUid);
-
+          console.log(this.$store.state.room.name);
           this.$fire.firestore
             .collection("users")
             .doc(userUid)
@@ -132,6 +132,7 @@ export default {
               checkin: false,
               status: "booked",
               id: this.randomRef(),
+              location: this.$store.state.room.name,
             }).then((res) => {
 
             });

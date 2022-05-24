@@ -229,7 +229,6 @@ export default {
               bookingDaySnapshot.forEach((booking, index) => {
                 let newData = new Map(Object.entries(booking.data()));
 
-                newData.set("location", "Room #001");
                 let date = newData.get("year") + "-" + newData.get("month") + "-" + newData.get("dayNumber");
                 newData.set("date", date);
                 newData.set("no", counter);
