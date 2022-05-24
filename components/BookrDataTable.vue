@@ -153,7 +153,7 @@ export default {
       let todayDate = yyyy + '-' + mm + '-' + dd;
       console.log(todayDate);
 
-      var hoursMinutesToday = String(today.getHours()) + ':' + String(today.getMinutes());
+      var hoursMinutesToday = String(today.getHours()).padStart(2, '0') + ':' + String(today.getMinutes()).padStart(2, '0');
       console.log(hoursMinutesToday);
 
       const bookingDate = item.date;
@@ -162,26 +162,42 @@ export default {
       const hoursMinutesBooking = item.start;
       console.log(hoursMinutesBooking);
 
-      if(today == bookingDate) {
-        let newCheckin = item.checkin;
 
-        const userUid = this.$fire.auth.currentUser.uid;
-        const ref = await this.$fire.firestore
-          .collection("users")
-          .doc(userUid)
-          .collection("bookings")
-          .doc(item.date)
-          .collection("data")
-          .where("start", "==", item.start)
-          .get()
-          .then((snap) => {
-            snap.forEach((doc) => {
-              console.log(doc.id, " => ", doc.data());
-              doc.ref.update({
-                checkin: newCheckin,
+      let todayArray = hoursMinutesToday.split(":");
+      let bookingArray = hoursMinutesBooking.split(":");
+      todayArray[0] = todayArray[0] * 60 * 60;
+      bookingArray[0] = bookingArray[0] * 60 * 60;
+      todayArray[1] = todayArray[1] * 60;
+      bookingArray[1] = bookingArray[1] * 60;
+
+      let todaySeconds = todayArray[0] + todayArray[1];
+      let bookingSeconds = bookingArray[0] + bookingArray[1];
+
+      console.log(todaySeconds);
+      console.log(bookingSeconds);
+
+      if(today == bookingDate) {
+        if(todaySeconds > bookingSeconds - 15 * 60) {
+          let newCheckin = item.checkin;
+
+          const userUid = this.$fire.auth.currentUser.uid;
+          const ref = await this.$fire.firestore
+            .collection("users")
+            .doc(userUid)
+            .collection("bookings")
+            .doc(item.date)
+            .collection("data")
+            .where("start", "==", item.start)
+            .get()
+            .then((snap) => {
+              snap.forEach((doc) => {
+                console.log(doc.id, " => ", doc.data());
+                doc.ref.update({
+                  checkin: newCheckin,
+                });
               });
-            });
-        });
+          });
+        }
       }
     },
     async getBookingsData() {
