@@ -130,7 +130,7 @@ export default {
               month: parseInt(dayMonth[1]),
               year: parseInt(year),
               checkin: false,
-              booked: true,
+              status: "booked",
               id: this.randomRef(),
             }).then((res) => {
 

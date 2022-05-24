@@ -135,6 +135,7 @@ export default {
       }
     },
     async getBookingsData() {
+      this.data = [];
       const userUid = this.$fire.auth.currentUser.uid;
       const ref = await this.$fire.firestore
         .collection("users")
