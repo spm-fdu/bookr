@@ -68,6 +68,10 @@ export default {
     dayIndexToString (dayIndex) {
       return this.dayFull[dayIndex - 1];
     },
+    randomRef() {
+      const uint32 = window.crypto.getRandomValues(new Uint32Array(1))[0];
+      return uint32.toString(16);
+    },
     async makeBooking () {
       console.log(this.details);
       console.log(this.databaseUid);
@@ -126,6 +130,8 @@ export default {
               month: parseInt(dayMonth[1]),
               year: parseInt(year),
               checkin: false,
+              booked: true,
+              ref: this.randomRef(),
             }).then((res) => {
 
             });
