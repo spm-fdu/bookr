@@ -4,6 +4,7 @@
     :items="data"
     :loading="loading"
     :search="search"
+    item-key="no"
     :items-per-page="5"
     class="elevation-1 pl-4 pr-4 pt-4"
     multi-sort
@@ -167,6 +168,7 @@ export default {
     async getBookingsData() {
       this.data = [];
       const userUid = this.$fire.auth.currentUser.uid;
+      let counter = 1;
       const ref = await this.$fire.firestore
         .collection("users")
         .doc(userUid)
@@ -182,6 +184,7 @@ export default {
                 newData.set("status", "booked");
                 let date = newData.get("year") + "-" + newData.get("month") + "-" + newData.get("dayNumber");
                 newData.set("date", date);
+                newData.set("no", counter);
 
                 newData.delete("year");
                 newData.delete("month");
@@ -189,6 +192,7 @@ export default {
                 newData.delete("day");
 
                 let newDataObj = Object.fromEntries(newData);
+                counter++;
 
                 this.data.push(newDataObj);
               });
