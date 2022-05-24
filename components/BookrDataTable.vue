@@ -39,12 +39,7 @@
 
     <template v-slot:item.action="{ item }">
       <!-- admin cannot reschedule for user, only user able to do so -->
-      <v-checkbox
-        v-model="item.checkin"
-        label="Checked In"
-        color="blue darken-3"
-        @click="setCheckIn(item)"
-      ></v-checkbox>
+      <v-btn depressed class="mr-1" @click="setCheckIn(item)">Check In</v-btn>
       <v-btn small outlined color="indigo" @click="editItem(item)" :disabled="disableButton(item.status)" v-show="!$store.state.persisted.admin">
         edit
       </v-btn>
@@ -178,6 +173,8 @@ export default {
 
       if(today == bookingDate) {
         if(todaySeconds > bookingSeconds - 15 * 60) {
+          item.status = "Checked In";
+          item.checkin = !item.checkin;
           let newCheckin = item.checkin;
 
           const userUid = this.$fire.auth.currentUser.uid;
