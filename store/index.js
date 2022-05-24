@@ -57,7 +57,14 @@ export const state = () => ({
   timeslots: {}, // [],
   test: {},
   databaseUid: '',
-  bookingDetails: []
+  bookingDetails: [],
+  room: {
+    name: '',
+    floor: '',
+    description: '', 
+    power: null, 
+    projector: null,
+  }
 })
 
 export const getters = {
@@ -90,6 +97,9 @@ export const getters = {
   },
   bookingDetails: (state) => {
     return state.bookingDetails
+  },
+  room: (state) => {
+    return state.room
   }
 }
 
@@ -160,6 +170,13 @@ export const mutations = {
     // invoked (manually or after time countdown) after booking is confirmed
     state.bookingDetails = [];
     state.stepper = 1;
+  },
+  setRoom(state, payload) {
+    state.room.name = payload.name; 
+    state.room.description = payload.description; 
+    state.room.floor = payload.floor; 
+    state.room.power = payload.power; 
+    state.room.projector = payload.projector; 
   }
 }
 export const strict = false
