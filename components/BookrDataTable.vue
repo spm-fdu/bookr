@@ -25,7 +25,7 @@
           class="mr-6"
         ></v-text-field>
         <v-btn x-small fab depressed @click="getBookingsData()"><v-icon>mdi-refresh</v-icon></v-btn>
-        <v-btn outlined depressed color="#6200ea" v-show="bookingBtn">
+        <v-btn outlined color="#6200ea" v-show="bookingBtn">
           <nuxt-link to="booking" class="text-decoration-none text-overline" style="color:#6200ea">new booking</nuxt-link>
         </v-btn>
 
@@ -39,7 +39,7 @@
 
     <template v-slot:item.action="{ item }">
       <!-- admin cannot reschedule for user, only user able to do so -->
-      <v-btn depressed class="mr-1" @click="setCheckIn(item)">Check In</v-btn>
+      <v-btn color="primary" depressed class="mr-1" @click="setCheckIn(item)">Check In</v-btn>
       <v-btn small outlined color="indigo" @click="editItem(item)" :disabled="disableButton(item.status)" v-show="!$store.state.persisted.admin">
         edit
       </v-btn>
