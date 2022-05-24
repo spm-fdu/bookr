@@ -155,7 +155,6 @@ export default {
                 console.log(booking.id, " => ", booking.data());
                 let newData = new Map(Object.entries(booking.data()));
 
-                newData.set("no", 1);
                 newData.set("location", "Room #001");
                 newData.set("status", "booked");
                 let date = newData.get("year") + "-" + newData.get("month") + "-" + newData.get("dayNumber");

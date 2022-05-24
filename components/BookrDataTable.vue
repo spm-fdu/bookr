@@ -4,7 +4,6 @@
     :items="data"
     :loading="loading"
     :search="search"
-    item-key="no"
     :items-per-page="5"
     class="elevation-1 pl-4 pr-4 pt-4"
     multi-sort
@@ -36,8 +35,15 @@
         {{ item.status }}
       </v-chip>
     </template>
+
     <template v-slot:item.action="{ item }">
       <!-- admin cannot reschedule for user, only user able to do so -->
+      <v-checkbox
+        v-model="item.checkin"
+        label="Checked In"
+        color="blue darken-3"
+        @click="setCheckIn(item)"
+      ></v-checkbox>
       <v-btn small outlined color="indigo" @click="editItem(item)" :disabled="disableButton(item.status)" v-show="!$store.state.persisted.admin">
         edit
       </v-btn>
@@ -114,6 +120,7 @@ export default {
     },
     async deleteItem(item) {
       item.status = "cancelled";
+
       const userUid = this.$fire.auth.currentUser.uid;
       const ref = await this.$fire.firestore
         .collection("users")
@@ -128,6 +135,27 @@ export default {
             console.log(doc.id, " => ", doc.data());
             doc.ref.update({
               status: "cancelled",
+            });
+          });
+        });
+    },
+    async setCheckIn(item) {
+      let newCheckin = item.checkin;
+
+      const userUid = this.$fire.auth.currentUser.uid;
+      const ref = await this.$fire.firestore
+        .collection("users")
+        .doc(userUid)
+        .collection("bookings")
+        .doc(item.date)
+        .collection("data")
+        .where("start", "==", item.start)
+        .get()
+        .then((snap) => {
+          snap.forEach((doc) => {
+            console.log(doc.id, " => ", doc.data());
+            doc.ref.update({
+              checkin: newCheckin,
             });
           });
         });
