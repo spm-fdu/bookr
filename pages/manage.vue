@@ -101,35 +101,7 @@ export default {
           // sortable: false
         },
       ],
-      data: [
-        {
-          no: '1',
-          id: '#12345',
-          location: 'Room #001',
-          date: '2022-05-12',
-          start: '14:00',
-          end: '16:00',
-          status: 'booked',
-        },
-        {
-          no: '2',
-          id: '#12346',
-          location: 'Room #001',
-          date: '2022-05-30',
-          start: '17:00',
-          end: '18:00',
-          status: 'cancelled',
-        },
-        {
-          no: '3',
-          id: '#12346',
-          location: 'Room #001',
-          date: '2022-06-01',
-          start: '17:00',
-          end: '18:00',
-          status: 'booked',
-        },
-      ],
+      data: this.getBookingsData(),
       booking: null,
     }
   },
@@ -162,11 +134,11 @@ export default {
         return false
       }
     },
-    async getBookingsData() {
+    getBookingsData() {
       let bookingsList = [];
 
       const userUid = this.$fire.auth.currentUser.uid;
-      const ref = await this.$fire.firestore
+      const ref = this.$fire.firestore
         .collection("users")
         .doc(userUid)
         .collection("bookings")
@@ -197,7 +169,7 @@ export default {
           });
         });
 
-      return await bookingsList;
+      return bookingsList;
     },
   },
   created () {
