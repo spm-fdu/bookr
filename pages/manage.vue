@@ -34,7 +34,6 @@
                 </template>
               </v-data-table> -->
             </v-tab-item>
-            <v-btn depressed class="mr-1" @click="getBookingsData();">get bookings</v-btn>
             <!-- history bookings -->
             <v-tab-item value="history">
 
