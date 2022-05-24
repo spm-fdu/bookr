@@ -230,7 +230,6 @@ export default {
                 let newData = new Map(Object.entries(booking.data()));
 
                 newData.set("location", "Room #001");
-                newData.set("status", "booked");
                 let date = newData.get("year") + "-" + newData.get("month") + "-" + newData.get("dayNumber");
                 newData.set("date", date);
                 newData.set("no", counter);
