@@ -67,11 +67,11 @@
     <!-- <v-btn depressed block @click="fetchData()">FETCH</v-btn> -->
 
     <div class="bookr__calendar_conditions mt-4">
-      <b>min</b
-      ><span class="mr-4 font-weight-normal"> {{ conditions.min }} hour</span>
-      <b>max</b><span class="mr-4"> {{ conditions.max }} hours</span>
-      <b>up to</b
-      ><span class="mr-4"> {{ conditions.advance }} days in advance</span>
+      <span class="font-weight-bold">min</span>
+      <span class="mr-4 font-weight-normal"> {{ conditions.min }} hour</span>
+      <span class="font-weight-bold">max</span>
+      <span class="mr-4"> {{ conditions.max }} hours</span>
+      <!-- <span class="mr-4"> {{ conditions.advance }} days in advance</span> -->
     </div>
   </div>
   <!-- </v-container> -->

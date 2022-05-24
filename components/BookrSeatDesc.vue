@@ -1,8 +1,8 @@
 <template>
   <div>
     <v-card flat class="pl-0 pr-0">
-      <v-card-title class="pl-0 pr-0">Seat #{{ data.no }}</v-card-title>
-      <v-card-subtitle class="pl-0 pr-0">{{ data.location }}</v-card-subtitle>
+      <v-card-title class="pl-0 pr-0">Room #{{ data.name }}</v-card-title>
+      <v-card-subtitle class="pl-0 pr-0">{{ data.floor }}</v-card-subtitle>
       <v-card-text class="pl-0 pr-0">{{ data.description }}</v-card-text>
     </v-card>
 
@@ -35,32 +35,36 @@ export default {
   data () {
     return this.data 
   },
+  created ()  {
+    console.log(this.data); 
+  },
   computed: {
     icons () { // List of dictionaries 
       let arr = Array();
-      Object.keys(this.data.equipments).forEach(key => {
-        let d = {}
-        if (key == 'power') { 
-          d['icon'] = 'mdi-power-socket';
-          d['title'] = 'Power Socket';
-        }
-        else if (key == 'projector') {
-           d['icon'] = 'mdi-projector';
-           d['title'] = 'Projector'
-        } 
+      
+      let power = {
+        icon: 'mdi-power-socket',
+        color: this.getColorFromStatus(this.data.power),
+        title: 'Power Socket'
+      }
 
-        d['color'] = this.getColorFromStatus(this.data.equipments[key].status)
-        arr.push(d);
-      });
+      let projector = {
+        icon: 'mdi-projector',
+        color: this.getColorFromStatus(this.data.projector),
+        title: 'Projector'
+      }
+
+      arr.push(power); 
+      arr.push(projector);
 
       return arr
     },
   },
   methods: {
     getColorFromStatus (status) {
-      if (status == 1) { return '#4de123' } 
-      else if (status == 0) { return 'grey' }
-      else { return 'red' }
+      if (status == 1) { return '#4de123' } // working 
+      else if (status == -1) { return 'grey' } // not available 
+      else { return 'red' } // broken 
     }
   }
 }
