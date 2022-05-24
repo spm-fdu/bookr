@@ -168,17 +168,5 @@ export default {
 </script>
 
 <style>
-.v-data-table > .v-data-table__wrapper > table > thead > tr > th {
-  padding: 10px !important;
-  font-weight: bold !important;
-  font-size: 0.9rem;
-}
-.v-data-table > .v-data-table__wrapper > table > tbody > tr > td {
-  padding: 15px 10px !important;
-}
-
-tbody tr:nth-of-type(even) {
-   background-color: rgba(0, 0, 0, .05);
- }
 
 </style>
