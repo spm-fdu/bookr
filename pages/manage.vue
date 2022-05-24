@@ -95,11 +95,6 @@ export default {
           // sortable: false
         },
         {
-          text: 'Check In',
-          value: 'checkin',
-          // sortable: false
-        },
-        {
           text: 'Action',
           value: 'action',
           // sortable: false
