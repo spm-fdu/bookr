@@ -139,38 +139,6 @@ export default {
         return false
       }
     },
-    async getBookingsData() {
-      this.data = [];
-      const userUid = this.$fire.auth.currentUser.uid;
-      const ref = await this.$fire.firestore
-        .collection("users")
-        .doc(userUid)
-        .collection("bookings")
-        .get()
-        .then((bookingsSnapshot) => {
-          bookingsSnapshot.forEach((bookings) => {
-            const bookingDayRef = bookings.ref.collection("data").get().then((bookingDaySnapshot) => {
-              bookingDaySnapshot.forEach((booking, index) => {
-                let newData = new Map(Object.entries(booking.data()));
-
-                newData.set("location", "Room #001");
-                newData.set("status", "booked");
-                let date = newData.get("year") + "-" + newData.get("month") + "-" + newData.get("dayNumber");
-                newData.set("date", date);
-
-                newData.delete("year");
-                newData.delete("month");
-                newData.delete("dayNumber");
-                newData.delete("day");
-
-                let newDataObj = Object.fromEntries(newData);
-
-                this.data.push(newDataObj);
-              });
-            });
-          });
-        });
-    },
   },
   created () {
     // async booking () {

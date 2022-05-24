@@ -23,7 +23,7 @@
           hide-details
           class="mr-6"
         ></v-text-field>
-        <v-btn x-small fab depressed><v-icon>mdi-refresh</v-icon></v-btn>
+        <v-btn x-small fab depressed @click="getBookingsData()"><v-icon>mdi-refresh</v-icon></v-btn>
         <v-btn outlined depressed color="#6200ea" v-show="bookingBtn">
           <nuxt-link to="booking" class="text-decoration-none text-overline" style="color:#6200ea">new booking</nuxt-link>
         </v-btn>
@@ -56,6 +56,10 @@
 
 <script>
 export default {
+  created() {
+    console.log("created");
+    this.getBookingsData();
+  },
   props: {
     headers: {
       type: Array,
@@ -156,6 +160,38 @@ export default {
             console.log(doc.id, " => ", doc.data());
             doc.ref.update({
               checkin: newCheckin,
+            });
+          });
+        });
+    },
+    async getBookingsData() {
+      this.data = [];
+      const userUid = this.$fire.auth.currentUser.uid;
+      const ref = await this.$fire.firestore
+        .collection("users")
+        .doc(userUid)
+        .collection("bookings")
+        .get()
+        .then((bookingsSnapshot) => {
+          bookingsSnapshot.forEach((bookings) => {
+            const bookingDayRef = bookings.ref.collection("data").get().then((bookingDaySnapshot) => {
+              bookingDaySnapshot.forEach((booking, index) => {
+                let newData = new Map(Object.entries(booking.data()));
+
+                newData.set("location", "Room #001");
+                newData.set("status", "booked");
+                let date = newData.get("year") + "-" + newData.get("month") + "-" + newData.get("dayNumber");
+                newData.set("date", date);
+
+                newData.delete("year");
+                newData.delete("month");
+                newData.delete("dayNumber");
+                newData.delete("day");
+
+                let newDataObj = Object.fromEntries(newData);
+
+                this.data.push(newDataObj);
+              });
             });
           });
         });
