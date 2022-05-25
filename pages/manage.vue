@@ -36,7 +36,7 @@
             </v-tab-item>
             <!-- history bookings -->
             <v-tab-item value="history">
-
+              <bookr-data-table :headers="headers" :data="data" title="History Bookings" :bookingBtn="false"></bookr-data-table>
             </v-tab-item>
           </v-tabs-items>
         </v-card>
