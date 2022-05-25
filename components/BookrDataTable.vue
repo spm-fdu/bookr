@@ -222,34 +222,78 @@ export default {
       this.data = [];
       const userUid = this.$fire.auth.currentUser.uid;
       let counter = 1;
-      const ref = await this.$fire.firestore
-        .collection("users")
-        .doc(userUid)
-        .collection("bookings")
-        .get()
-        .then((bookingsSnapshot) => {
-          bookingsSnapshot.forEach((bookings) => {
-            const bookingDayRef = bookings.ref.collection("data").get().then((bookingDaySnapshot) => {
-              bookingDaySnapshot.forEach((booking, index) => {
-                let newData = new Map(Object.entries(booking.data()));
+      if(this.upcomingFlag) {
+        const ref = await this.$fire.firestore
+          .collection("users")
+          .doc(userUid)
+          .collection("bookings")
+          .get()
+          .then((bookingsSnapshot) => {
+            bookingsSnapshot.forEach((bookings) => {
+              const bookingDayRef = bookings.ref.collection("data").get().then((bookingDaySnapshot) => {
+                bookingDaySnapshot.forEach((booking, index) => {
+                  let newData = new Map(Object.entries(booking.data()));
 
-                let date = newData.get("year") + "-" + newData.get("month") + "-" + newData.get("dayNumber");
-                newData.set("date", date);
-                newData.set("no", counter);
+                  let date = newData.get("year") + "-" + newData.get("month") + "-" + newData.get("dayNumber");
+                  newData.set("date", date);
+                  newData.set("no", counter);
 
-                newData.delete("year");
-                newData.delete("month");
-                newData.delete("dayNumber");
-                newData.delete("day");
+                  newData.delete("year");
+                  newData.delete("month");
+                  newData.delete("dayNumber");
+                  newData.delete("day");
 
-                let newDataObj = Object.fromEntries(newData);
-                counter++;
+                  let newDataObj = Object.fromEntries(newData);
+                  counter++;
 
-                this.data.push(newDataObj);
+                  this.data.push(newDataObj);
+                });
               });
             });
           });
-        });
+      }
+      else {
+        const ref = await this.$fire.firestore
+          .collection("users")
+          .doc(userUid)
+          .collection("bookings")
+          .get()
+          .then((bookingsSnapshot) => {
+            bookingsSnapshot.forEach((bookings) => {
+              let bookingDate = bookings.data()["date"];
+              console.log(bookingDate);
+              const today = new Date();
+              var dd = String(today.getDate());
+              var mm = String(today.getMonth() + 1);
+              var yyyy = today.getFullYear();
+              let todayDate = yyyy + '-' + mm + '-' + dd;
+              console.log(todayDate);
+
+              let newBookingDate = new Date(bookingDate);
+              console.log(newBookingDate);
+
+              const bookingDayRef = bookings.ref.collection("data").get().then((bookingDaySnapshot) => {
+                bookingDaySnapshot.forEach((booking, index) => {
+                  let newData = new Map(Object.entries(booking.data()));
+
+                  let date = newData.get("year") + "-" + newData.get("month") + "-" + newData.get("dayNumber");
+                  newData.set("date", date);
+                  newData.set("no", counter);
+
+                  newData.delete("year");
+                  newData.delete("month");
+                  newData.delete("dayNumber");
+                  newData.delete("day");
+
+                  let newDataObj = Object.fromEntries(newData);
+                  counter++;
+
+                  this.data.push(newDataObj);
+                });
+              });
+            });
+          });
+      }
     },
   },
 }
