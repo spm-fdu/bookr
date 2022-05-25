@@ -39,7 +39,7 @@
 
     <template v-slot:item.action="{ item }">
       <!-- admin cannot reschedule for user, only user able to do so -->
-      <v-btn color="primary" depressed class="mr-1" @click="setCheckIn(item)" :disabled="disableButton(item.status)">Check In</v-btn>
+      <v-btn color="primary" depressed class="mr-1" @click="setCheckIn(item)" :disabled="disableCheckInButton(item)">Check In</v-btn>
       <v-btn small outlined color="indigo" @click="editItem(item)" :disabled="disableButton(item.status)" v-show="!$store.state.persisted.admin">
         edit
       </v-btn>
@@ -118,6 +118,24 @@ export default {
       } else {
         return false
       }
+    },
+    disableCheckInButton (item) {
+      console.log(item);
+
+      let today = new Date();
+      let todate = today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + today.getDate();
+      let time = today.toLocaleTimeString('en-US', { hour12: false, hour: "numeric", minute: "numeric"});
+
+      console.log(todate);
+      console.log(time);
+
+      let bookingDate = item.date;
+      let bookingTime = item.start;
+
+      console.log(bookingDate);
+      console.log(bookingTime);
+
+      return false;
     },
     editItem(item) {
 
