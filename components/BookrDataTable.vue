@@ -230,25 +230,32 @@ export default {
           .get()
           .then((bookingsSnapshot) => {
             bookingsSnapshot.forEach((bookings) => {
-              const bookingDayRef = bookings.ref.collection("data").get().then((bookingDaySnapshot) => {
-                bookingDaySnapshot.forEach((booking, index) => {
-                  let newData = new Map(Object.entries(booking.data()));
+              let bookingDate = new Date(bookings.data()["date"]);
+              console.log(bookingDate);
+              let todayDate = new Date();
+              console.log(todayDate);
 
-                  let date = newData.get("year") + "-" + newData.get("month") + "-" + newData.get("dayNumber");
-                  newData.set("date", date);
-                  newData.set("no", counter);
+              if(bookingDate >= todayDate) {
+                const bookingDayRef = bookings.ref.collection("data").get().then((bookingDaySnapshot) => {
+                  bookingDaySnapshot.forEach((booking, index) => {
+                    let newData = new Map(Object.entries(booking.data()));
 
-                  newData.delete("year");
-                  newData.delete("month");
-                  newData.delete("dayNumber");
-                  newData.delete("day");
+                    let date = newData.get("year") + "-" + newData.get("month") + "-" + newData.get("dayNumber");
+                    newData.set("date", date);
+                    newData.set("no", counter);
 
-                  let newDataObj = Object.fromEntries(newData);
-                  counter++;
+                    newData.delete("year");
+                    newData.delete("month");
+                    newData.delete("dayNumber");
+                    newData.delete("day");
 
-                  this.data.push(newDataObj);
+                    let newDataObj = Object.fromEntries(newData);
+                    counter++;
+
+                    this.data.push(newDataObj);
+                  });
                 });
-              });
+              }
             });
           });
       }
@@ -260,37 +267,32 @@ export default {
           .get()
           .then((bookingsSnapshot) => {
             bookingsSnapshot.forEach((bookings) => {
-              let bookingDate = bookings.data()["date"];
+              let bookingDate = new Date(bookings.data()["date"]);
               console.log(bookingDate);
-              const today = new Date();
-              var dd = String(today.getDate());
-              var mm = String(today.getMonth() + 1);
-              var yyyy = today.getFullYear();
-              let todayDate = yyyy + '-' + mm + '-' + dd;
+              let todayDate = new Date();
               console.log(todayDate);
 
-              let newBookingDate = new Date(bookingDate);
-              console.log(newBookingDate);
+              if(bookingDate < todayDate) {
+                const bookingDayRef = bookings.ref.collection("data").get().then((bookingDaySnapshot) => {
+                  bookingDaySnapshot.forEach((booking, index) => {
+                    let newData = new Map(Object.entries(booking.data()));
 
-              const bookingDayRef = bookings.ref.collection("data").get().then((bookingDaySnapshot) => {
-                bookingDaySnapshot.forEach((booking, index) => {
-                  let newData = new Map(Object.entries(booking.data()));
+                    let date = newData.get("year") + "-" + newData.get("month") + "-" + newData.get("dayNumber");
+                    newData.set("date", date);
+                    newData.set("no", counter);
 
-                  let date = newData.get("year") + "-" + newData.get("month") + "-" + newData.get("dayNumber");
-                  newData.set("date", date);
-                  newData.set("no", counter);
+                    newData.delete("year");
+                    newData.delete("month");
+                    newData.delete("dayNumber");
+                    newData.delete("day");
 
-                  newData.delete("year");
-                  newData.delete("month");
-                  newData.delete("dayNumber");
-                  newData.delete("day");
+                    let newDataObj = Object.fromEntries(newData);
+                    counter++;
 
-                  let newDataObj = Object.fromEntries(newData);
-                  counter++;
-
-                  this.data.push(newDataObj);
+                    this.data.push(newDataObj);
+                  });
                 });
-              });
+              }
             });
           });
       }
