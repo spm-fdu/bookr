@@ -80,6 +80,10 @@ export default {
     bookingBtn: {
       type: Boolean,
       require: true
+    },
+    upcomingFlag: {
+      type: Boolean,
+      require: true
     }
   },
   methods: {

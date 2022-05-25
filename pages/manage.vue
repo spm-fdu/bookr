@@ -11,7 +11,7 @@
           <v-tabs-items v-model="defaultTab">
             <!-- upcoming bookings -->
             <v-tab-item value="upcoming">
-              <bookr-data-table :headers="headers" :data="data" title="Upcoming Bookings" :bookingBtn="true"></bookr-data-table>
+              <bookr-data-table :headers="headers" :data="data" title="Upcoming Bookings" :upcomingFlag="true" :bookingBtn="true"></bookr-data-table>
               <!-- <v-data-table :headers="headers" :items="data" item-key="no" :items-per-page="5" class="elevation-1">
                 <template v-slot:top>
                   <v-toolbar flat>
@@ -36,7 +36,7 @@
             </v-tab-item>
             <!-- history bookings -->
             <v-tab-item value="history">
-              <bookr-data-table :headers="headers" :data="data" title="History Bookings" :bookingBtn="false"></bookr-data-table>
+              <bookr-data-table :headers="headers" :data="data" title="History Bookings" :upcomingFlag="false" :bookingBtn="false"></bookr-data-table>
             </v-tab-item>
           </v-tabs-items>
         </v-card>
