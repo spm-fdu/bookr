@@ -73,14 +73,14 @@ export default {
       return uint32.toString(16);
     },
     async makeBooking () {
-      console.log(this.details);
-      console.log(this.databaseUid);
+      // console.log(this.details);
+      // console.log(this.databaseUid);
 
       const userEmail = this.$fire.auth.currentUser.email;
-      console.log(userEmail);
+      // console.log(userEmail);
 
       const userUid = this.$fire.auth.currentUser.uid;
-      console.log(userUid);
+      // console.log(userUid);
 
       let daysLength = Object.keys(this.details).length;
       let bookingsStrList = Array(daysLength);
@@ -96,6 +96,15 @@ export default {
 
         for (const separateSlot of this.details[key]) {
           let startEndTimes = separateSlot.split("-");
+          let time = this.$store.getters.time;
+          const id = this.randomRef();
+
+          // generate a list[start, end] of bookings so we can block out those slots in "rooms"
+          let startIndex = Object.keys(time).find(key => time[key] === startEndTimes[0]);
+          let endIndex = Object.keys(time).find(key => time[key] === startEndTimes[1]);
+          const range = (start, stop, step) => Array.from({ length: (stop - start) / step + 1}, (_, i) => start + (i * step));
+          let roomBlockedOutSlots = range(startIndex, endIndex, 1);
+          
 
           bookingsMap.get(docUid).push(separateSlot);
 
@@ -114,7 +123,23 @@ export default {
               });
           }
           // console.log(startEndTimes, dayMonth, year, docUid);
-          console.log(this.$store.state.room.name);
+          // console.log(this.$store.state.room.name);
+
+          // ensure room time slot is blocked out before we add a booking (prevent race condition?)
+          for (let slotIndex in roomBlockedOutSlots) {
+            this.$fire.firestore
+              .collection("rooms")
+              .doc(this.$store.state.room.name)
+              .collection(docUid)
+              .doc(slotIndex)
+              .set({
+                bookerId: userUid,
+                bookerEmail: userEmail,
+                bookingId: id, 
+                time: time[slotIndex]
+              })
+          }
+
           this.$fire.firestore
             .collection("users")
             .doc(userUid)
@@ -131,10 +156,10 @@ export default {
               year: parseInt(year),
               checkin: false,
               status: "booked",
-              id: this.randomRef(),
+              id: id,
               location: this.$store.state.room.name,
             }).then((res) => {
-
+              
             });
         }
       }
@@ -172,14 +197,12 @@ export default {
           content: bookingsStrJoined,
           })
           .then(_ => {
-
+            // when email is sent, move to the next step
+            this.moveNext();
           })
           .catch((err) => {
             console.log("Err:", err);
           });
-
-        // when email is sent, move to the next step
-        this.moveNext();
       }
     }
   }
