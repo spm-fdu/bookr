@@ -120,22 +120,33 @@ export default {
       }
     },
     disableCheckInButton (item) {
-      console.log(item);
-
       let today = new Date();
       let todate = today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + today.getDate();
       let time = today.toLocaleTimeString('en-US', { hour12: false, hour: "numeric", minute: "numeric"});
 
-      console.log(todate);
-      console.log(time);
-
       let bookingDate = item.date;
-      let bookingTime = item.start;
+      let hoursMinutesBooking = item.start;
 
-      console.log(bookingDate);
-      console.log(bookingTime);
+      let todayArray = time.split(":");
+      let bookingArray = hoursMinutesBooking.split(":");
+      todayArray[0] = todayArray[0] * 60 * 60;
+      bookingArray[0] = bookingArray[0] * 60 * 60;
+      todayArray[1] = todayArray[1] * 60;
+      bookingArray[1] = bookingArray[1] * 60;
 
-      return false;
+      let todaySeconds = todayArray[0] + todayArray[1];
+      let bookingSeconds = bookingArray[0] + bookingArray[1];
+
+      console.log(todaySeconds);
+      console.log(bookingSeconds);
+
+      if (today == bookingDate) {
+        if(todaySeconds > bookingSeconds - 15 * 60) {
+          return false;
+        }
+      }
+
+      return true;
     },
     editItem(item) {
 
@@ -162,79 +173,44 @@ export default {
         });
     },
     async setCheckIn(item) {
-      const today = new Date();
-      console.log(today);
-      var dd = String(today.getDate());
-      var mm = String(today.getMonth() + 1);
-      var yyyy = today.getFullYear();
-      let todayDate = yyyy + '-' + mm + '-' + dd;
-      console.log(todayDate);
+      item.status = "Checked In";
+      item.checkin = !item.checkin;
+      let newCheckin = item.checkin;
 
-      var hoursMinutesToday = String(today.getHours()).padStart(2, '0') + ':' + String(today.getMinutes()).padStart(2, '0');
-      console.log(hoursMinutesToday);
-
-      const bookingDate = item.date;
-      console.log(bookingDate);
-
-      const hoursMinutesBooking = item.start;
-      console.log(hoursMinutesBooking);
-
-
-      let todayArray = hoursMinutesToday.split(":");
-      let bookingArray = hoursMinutesBooking.split(":");
-      todayArray[0] = todayArray[0] * 60 * 60;
-      bookingArray[0] = bookingArray[0] * 60 * 60;
-      todayArray[1] = todayArray[1] * 60;
-      bookingArray[1] = bookingArray[1] * 60;
-
-      let todaySeconds = todayArray[0] + todayArray[1];
-      let bookingSeconds = bookingArray[0] + bookingArray[1];
-
-      console.log(todaySeconds);
-      console.log(bookingSeconds);
-
-      if(today == bookingDate) {
-        if(todaySeconds > bookingSeconds - 15 * 60) {
-          item.status = "Checked In";
-          item.checkin = !item.checkin;
-          let newCheckin = item.checkin;
-
-          const userUid = this.$fire.auth.currentUser.uid;
-          const ref = await this.$fire.firestore
-            .collection("users")
-            .doc(userUid)
-            .collection("bookings")
-            .doc(item.date)
-            .collection("data")
-            .where("start", "==", item.start)
-            .get()
-            .then((snap) => {
-              snap.forEach((doc) => {
-                console.log(doc.id, " => ", doc.data());
-                doc.ref.update({
-                  checkin: newCheckin,
-                });
-              });
+      const userUid = this.$fire.auth.currentUser.uid;
+      const ref = await this.$fire.firestore
+        .collection("users")
+        .doc(userUid)
+        .collection("bookings")
+        .doc(item.date)
+        .collection("data")
+        .where("start", "==", item.start)
+        .get()
+        .then((snap) => {
+          snap.forEach((doc) => {
+            console.log(doc.id, " => ", doc.data());
+            doc.ref.update({
+              checkin: newCheckin,
+            });
           });
+      });
 
-          const ref2 = await this.$fire.firestore
-            .collection("users")
-            .doc(userUid)
-            .collection("bookings")
-            .doc(item.date)
-            .collection("data")
-            .where("start", "==", item.start)
-            .get()
-            .then((snap) => {
-              snap.forEach((doc) => {
-                console.log(doc.id, " => ", doc.data());
-                doc.ref.update({
-                  status: "Checked In",
-                });
-              });
+      const ref2 = await this.$fire.firestore
+        .collection("users")
+        .doc(userUid)
+        .collection("bookings")
+        .doc(item.date)
+        .collection("data")
+        .where("start", "==", item.start)
+        .get()
+        .then((snap) => {
+          snap.forEach((doc) => {
+            console.log(doc.id, " => ", doc.data());
+            doc.ref.update({
+              status: "Checked In",
+            });
           });
-        }
-      }
+      });
     },
     async getBookingsData() {
       this.data = [];
@@ -285,14 +261,18 @@ export default {
           .get()
           .then((bookingsSnapshot) => {
             bookingsSnapshot.forEach((bookings) => {
-              let bookingDate = new Date(bookings.data()["date"]);
-              console.log(bookingDate);
-              let todayDate = new Date();
-              console.log(todayDate);
+              const bookingDayRef = bookings.ref.collection("data").get().then((bookingDaySnapshot) => {
+                bookingDaySnapshot.forEach((booking, index) => {
+                  let bookingDate = new Date(bookings.data()["date"]);
+                  let bookingStartTime = booking.data()["start"];
+                  let bookingStartTimeArray = bookingStartTime.split(":");
+                  bookingDate.setHours(bookingStartTimeArray[0]);
+                  bookingDate.setMinutes(bookingStartTimeArray[1]);
+                  console.log("booking date", bookingDate);
+                  let todayDate = new Date();
+                  console.log("today date:", todayDate);
 
-              if(bookingDate < todayDate) {
-                const bookingDayRef = bookings.ref.collection("data").get().then((bookingDaySnapshot) => {
-                  bookingDaySnapshot.forEach((booking, index) => {
+                  if (bookingDate < todayDate) {
                     let newData = new Map(Object.entries(booking.data()));
 
                     let date = newData.get("year") + "-" + newData.get("month") + "-" + newData.get("dayNumber");
@@ -308,9 +288,9 @@ export default {
                     counter++;
 
                     this.data.push(newDataObj);
-                  });
+                  }
                 });
-              }
+              });
             });
           });
       }
