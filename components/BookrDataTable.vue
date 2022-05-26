@@ -137,11 +137,9 @@ export default {
       let todaySeconds = todayArray[0] + todayArray[1];
       let bookingSeconds = bookingArray[0] + bookingArray[1];
 
-      console.log(todaySeconds);
-      console.log(bookingSeconds);
-
-      if (today == bookingDate) {
-        if(todaySeconds > bookingSeconds - 15 * 60) {
+      if (todate == bookingDate) {
+        console.log("yes");
+        if (todaySeconds > bookingSeconds - 15 * 60) {
           return false;
         }
       }
@@ -231,9 +229,7 @@ export default {
                     let bookingStartTimeArray = bookingStartTime.split(":");
                     bookingDate.setHours(bookingStartTimeArray[0]);
                     bookingDate.setMinutes(bookingStartTimeArray[1]);
-                    console.log("booking date", bookingDate);
                     let todayDate = new Date();
-                    console.log("today date:", todayDate);
 
                     if (bookingDate >= todayDate) {
                       let newData = new Map(Object.entries(booking.data()));
@@ -272,9 +268,7 @@ export default {
                   let bookingStartTimeArray = bookingStartTime.split(":");
                   bookingDate.setHours(bookingStartTimeArray[0]);
                   bookingDate.setMinutes(bookingStartTimeArray[1]);
-                  console.log("booking date", bookingDate);
                   let todayDate = new Date();
-                  console.log("today date:", todayDate);
 
                   if (bookingDate < todayDate) {
                     let newData = new Map(Object.entries(booking.data()));
