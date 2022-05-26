@@ -146,7 +146,6 @@
           class="pl-16 pr-16"
           v-bind="attrs"
           v-on="on"
-          :disabled="disabled.email"
           @click="standardLoginType()"
           >Next</v-btn
         >
@@ -494,7 +493,7 @@ export default {
     signUpMobile() {
       const code = this.$self.credentials.ver_code;
       console.log(code);
-      window.confirmationResult
+      confirmationResult
         .confirm(code)
         .then((result) => {
           const user = result.user;
