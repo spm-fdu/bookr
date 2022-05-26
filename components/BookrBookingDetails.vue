@@ -34,7 +34,7 @@
       <v-row class="mt-10">
         <v-col cols="4" offset-md="8">
           <v-btn depressed class="mr-1" @click="moveBack()">modify</v-btn>
-          <v-btn depressed class="ml-1" @click="makeBooking(); moveNext();">confirm</v-btn>
+          <v-btn depressed class="ml-1" @click="makeBooking();">confirm</v-btn>
           <!-- <v-btn depressed class="ml-1" @click=" moveNext(); ">confirm</v-btn> -->
         </v-col>
       </v-row>
@@ -103,9 +103,13 @@ export default {
           // generate a list[start, end] of bookings so we can block out those slots in "rooms"
           let startIndex = Object.keys(time).find(key => time[key] === startEndTimes[0]);
           let endIndex = Object.keys(time).find(key => time[key] === startEndTimes[1]);
+          console.log("start index:", startIndex);
+          console.log("start index type:", typeof(startIndex));
+          console.log("end index:", endIndex);
           const range = (start, stop, step) => Array.from({ length: (stop - start) / step + 1}, (_, i) => start + (i * step));
-          let roomBlockedOutSlots = range(startIndex, endIndex, 1);
-          console.log(roomBlockedOutSlots);
+          console.log("range", range);
+          let roomBlockedOutSlots = range(parseInt(startIndex), parseInt(endIndex), 1);
+          console.log("roomblockedoutslots:", roomBlockedOutSlots);
 
           bookingsMap.get(docUid).push(separateSlot);
 
@@ -128,19 +132,17 @@ export default {
 
           // ensure room time slot is blocked out before we add a booking (prevent race condition?)
           for (let slotIndex in roomBlockedOutSlots) {
-            console.log(slotIndex);
-            console.log(typeof(slotIndex));
-            console.log(time[String(parseInt(slotIndex)+1)]);
+            let slot = roomBlockedOutSlots[slotIndex];
             this.$fire.firestore
               .collection("rooms")
               .doc(this.$store.state.room.name)
               .collection(docUid)
-              .doc(String(parseInt(slotIndex + 1)))
+              .doc(String(slot))
               .set({
                 bookerId: userUid,
                 bookerEmail: userEmail,
                 bookingId: id,
-                time: time[String(parseInt(slotIndex)+1)]
+                time: time[String(slot)]
               });
           }
 
@@ -201,12 +203,13 @@ export default {
           content: bookingsStrJoined,
           })
           .then(_ => {
-            // when email is sent, move to the next step
-            this.moveNext();
+
           })
           .catch((err) => {
             console.log("Err:", err);
           });
+
+        this.moveNext();
       }
     }
   }
