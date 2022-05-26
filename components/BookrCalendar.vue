@@ -27,19 +27,19 @@
       <v-row no-gutters v-for="i in 5" :key="i">
         <v-col v-for="n in numBox" :key="n" class="timeslots">
           <template>
-            <v-item v-slot="{ active, toggle }" v-if="n != 1">
+            <v-item v-if="n != 1">
               <v-sheet
                 @click="
-                  toggle();
-                  updateList(i, n);
+                  toggle(i, n);
+
                 "
-                :color="active ? '#3b47ec' : ''"
+                :color="getInitialColor(i, n)"
                 style="height: 100%; width: 100%"
-                class="align-center justify-center text-center"
+                :class="`align-center justify-center text-center timeslots__${i}_${n}`"
                 align="center"
                 justify="center"
               >
-                <v-icon color="white" class="text-center pt-5 pb-5"
+                <v-icon :color="getInitialColor(i,n)" class="text-center pt-5 pb-5"
                   >mdi-check</v-icon
                 >
               </v-sheet>
@@ -114,7 +114,68 @@ export default {
         "10 PM",
       ],
       timeslots: {},
+      toggled: [],
+      blockedDay: [],
+      blockedSlot: {
+        1: [],
+        2: [],
+        3: [],
+        4: [],
+        5: [],
+      },
     };
+  },
+  created () {
+    // check whether entire day is blocked (i.e. we cannot book in the past) or certain slots are booked and have to be blocked
+    let today = new Date();
+
+    this.week.forEach((date, index) => {
+      let splitDate = date.split('/')
+      let day = splitDate[0];
+      let month = splitDate[1];
+
+      // if today's date is greater than the date in the week, then it is not available
+      // new month 
+      if ((today.getMonth() + 1) > month) {
+        this.blockedDay.push(index + 1);
+        return;
+      }
+
+      // same month, but today is greater than the date in the week
+      // console.log(today.getDate() > day && )
+      if (((today.getMonth() + 1) == month) && (today.getDate() > day)) {
+        this.blockedDay.push(index + 1);
+        return;
+      }
+
+      // since we checked the month and date, now we only need to check if the slot within the day 
+      if (today.getDate() <= day) {
+        const ref = this.$fire.firestore.collection("rooms")
+                                        .doc(this.$store.state.room.name)
+                                        .collection(`${today.getFullYear()}-${month}-${day}`).get() 
+        ref.then(snapshot => {
+          if (snapshot.docs.length > 0) {
+            // console.log(snapshot.docs);
+            snapshot.forEach(doc => {
+              this.blockedSlot[index + 1].push(parseInt(doc.id) + 1)
+            })
+          }
+
+          let cmpDate = new Date()
+          
+          // get all the indices before current time so we can block off the slots ($store.state.time uses index-based hence index is needed)
+          const getSlotsBeforeCurrentTime = (slots) => slots
+            .filter(time => cmpDate.setHours(time.split(':')[0], time.split(':')[1], 0) <= today.setHours(today.getHours(), today.getMinutes(), 0))
+          
+          // all the slots before current time 
+          let slotsBeforeCurrentTime = getSlotsBeforeCurrentTime(Object.values(this.$store.getters.time)).map((_, index) => { return index + 1 })
+          slotsBeforeCurrentTime.push(slotsBeforeCurrentTime[slotsBeforeCurrentTime.length - 1] + 1) // add the last slot to the list
+
+          // merge blocked slots before current time with existing bookings 
+          this.blockedSlot[today.getDay()] = [...new Set([...this.blockedSlot[today.getDay()], ...slotsBeforeCurrentTime])]
+        })
+      }
+    })
   },
   computed: {
     ...mapGetters(["dayShort"]),
@@ -139,21 +200,34 @@ export default {
       this.$store.commit("setYear", year);
       return week;
     },
-    // year() {
-    //   var current = new Date();
-    //   current.setDate(current.getDate() - current.getDay() + 1);
-    //   var year = new Array();
-    //   for (var i = 0; i < 5; i++) {
-    //     let t = new Date(current);
-    //     let currentYear = t.getFullYear();
-    //     year.push(currentYear);
-    //     current.setDate(current.getDate() + 1);
-    //   }
-    //   this.$store.commit("setYear", year);
-    //   return year;
-    // },
   },
   methods: {
+    getInitialColor (day, slot) {
+      if (this.blockedDay.includes(day) || this.blockedSlot[day].includes(slot)) {
+        return 'grey lighten-2';
+      } else {
+        return 'white'; 
+      }
+    },
+    toggle (day, slot) {
+      // toggle will verify and return appropriate color 
+
+      if (this.toggled.includes(`${day}_${slot}`)) {
+        document.getElementsByClassName(`timeslots__${day}_${slot}`)[0].style.setProperty('background-color', 'white', 'important');
+
+        this.toggled = this.toggled.filter(e => e !== `${day}_${slot}`);
+        this.updateList(day, slot);
+        return;
+      }
+
+      if (!(this.blockedDay.includes(day) || this.blockedSlot[day].includes(slot))) {
+        document.getElementsByClassName(`timeslots__${day}_${slot}`)[0].style.setProperty('background-color', '#3b47ec', 'important');
+        this.toggled.push(`${day}_${slot}`)
+        // console.log(day, slot)
+        this.updateList(day, slot);
+      }
+
+    },
     updateList(day, time) {
       // timeslots {
       //   'key': {
@@ -270,4 +344,5 @@ export default {
   border-color: #c5c5c5;
   background-color: #eeeeee;
 }
+// :color="(active && (!blockedDay.includes(i)) && (!blockedSlot[i].includes(n))) ? '#3b47ec' : ''"
 </style>
