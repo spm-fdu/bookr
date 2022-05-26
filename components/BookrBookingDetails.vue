@@ -35,7 +35,6 @@
         <v-col cols="4" offset-md="8">
           <v-btn depressed class="mr-1" @click="moveBack()">modify</v-btn>
           <v-btn depressed class="ml-1" @click="makeBooking();">confirm</v-btn>
-          <!-- <v-btn depressed class="ml-1" @click=" moveNext(); ">confirm</v-btn> -->
         </v-col>
       </v-row>
     </v-card>
