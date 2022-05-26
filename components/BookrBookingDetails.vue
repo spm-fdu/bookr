@@ -34,7 +34,7 @@
       <v-row class="mt-10">
         <v-col cols="4" offset-md="8">
           <v-btn depressed class="mr-1" @click="moveBack()">modify</v-btn>
-          <v-btn depressed class="ml-1" @click="makeBooking();">confirm</v-btn>
+          <v-btn depressed class="ml-1" @click="makeBooking(); moveNext();">confirm</v-btn>
           <!-- <v-btn depressed class="ml-1" @click=" moveNext(); ">confirm</v-btn> -->
         </v-col>
       </v-row>
@@ -90,13 +90,14 @@ export default {
       for (let key in this.details) {
         let dayMonth = this.week[key - 1].split("/");
         let year = this.year[key - 1];
-        let docUid = year + "-" + dayMonth[1] + "-" + dayMonth[0];
+        let docUid = year + "-" + dayMonth[1].padStart(2, "0") + "-" + dayMonth[0].padStart(2, "0");
 
         bookingsMap.set(docUid, []);
 
         for (const separateSlot of this.details[key]) {
           let startEndTimes = separateSlot.split("-");
           let time = this.$store.getters.time;
+          console.log("time", time);
           const id = this.randomRef();
 
           // generate a list[start, end] of bookings so we can block out those slots in "rooms"
@@ -104,7 +105,7 @@ export default {
           let endIndex = Object.keys(time).find(key => time[key] === startEndTimes[1]);
           const range = (start, stop, step) => Array.from({ length: (stop - start) / step + 1}, (_, i) => start + (i * step));
           let roomBlockedOutSlots = range(startIndex, endIndex, 1);
-          
+          console.log(roomBlockedOutSlots);
 
           bookingsMap.get(docUid).push(separateSlot);
 
@@ -127,17 +128,20 @@ export default {
 
           // ensure room time slot is blocked out before we add a booking (prevent race condition?)
           for (let slotIndex in roomBlockedOutSlots) {
+            console.log(slotIndex);
+            console.log(typeof(slotIndex));
+            console.log(time[String(parseInt(slotIndex)+1)]);
             this.$fire.firestore
               .collection("rooms")
               .doc(this.$store.state.room.name)
               .collection(docUid)
-              .doc(slotIndex)
+              .doc(String(parseInt(slotIndex + 1)))
               .set({
                 bookerId: userUid,
                 bookerEmail: userEmail,
-                bookingId: id, 
-                time: time[slotIndex]
-              })
+                bookingId: id,
+                time: time[String(parseInt(slotIndex)+1)]
+              });
           }
 
           this.$fire.firestore
@@ -159,7 +163,7 @@ export default {
               id: id,
               location: this.$store.state.room.name,
             }).then((res) => {
-              
+
             });
         }
       }
