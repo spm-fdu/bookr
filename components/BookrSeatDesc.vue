@@ -36,7 +36,7 @@ export default {
     return this.data 
   },
   created ()  {
-    console.log(this.data); 
+    // console.log(this.data); 
   },
   computed: {
     icons () { // List of dictionaries 

@@ -112,7 +112,7 @@ export default {
   },
   created () {
     // this.$store.commit('setId', this.seat.no);
-    console.log(this.$store.state.room);
+    // console.log(this.$store.state.room);
   },
   computed: {
     width () {
