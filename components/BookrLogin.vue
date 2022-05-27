@@ -37,7 +37,7 @@
       <v-btn depressed class="pl-16 pr-16" :disabled="disabled.both || disabled.email || disabled.pwd" @click="login()">login</v-btn>
       <v-divider class="login__short_divider "></v-divider>
 
-      <v-btn fab depressed x-small class="ml-4 mr-4" v-for="(i,index) in social" :key="index">
+      <v-btn fab depressed x-small class="ml-4 mr-4" v-for="(i,index) in social" :key="index" @click="signUpThirdParty(index)">
         <v-icon>{{ i.icon }}</v-icon>
       </v-btn>
     </v-card>
@@ -196,9 +196,9 @@ export default {
               console.log(token);
               console.log(user);
 
-              this.$fire.firestore.collection("users").doc(user.uid).set({});
+              this.$fire.firestore.collection("users").doc(user.uid).set({ 'admin': false });
 
-              this.$router.push('/booking');
+              this.$router.push('/dashboard');
             })
             .catch((err) => {
               console.log(err);
