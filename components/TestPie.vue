@@ -48,10 +48,13 @@ export default {
   },
   methods: {
     getCurrentBooked(room) {
+      let today = new Date();
+      let todate = today.getFullYear() + '-' + (today.getMonth() + 1).toString().padStart(2, "0") + '-' + today.getDate().toString().padStart(2, "0");
+      console.log(todate);
       const ref = this.$fire.firestore
         .collection("rooms")
         .doc(room)
-        .collection("2022-05-27")
+        .collection(todate)
         .get()
         .then(daySnapshot => {
           this.data[0]["value"] = Object.keys(this.$store.state.time).length - daySnapshot.size;
