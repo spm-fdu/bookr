@@ -7,7 +7,7 @@
       <v-divider class="ml-2 mr-2 py-2"></v-divider>
       <v-row class="pb-4" justify="center" align="center">
         <v-card elevation="0">
-          <ccv-pie-chart :data='data' :options='options'></ccv-pie-chart>  
+          <ccv-pie-chart :data='data' :options='options'></ccv-pie-chart>
         </v-card>
       </v-row>
     </div>
@@ -28,7 +28,7 @@ export default {
     },
     title: {
       type: String,
-      require:true, 
+      require:true,
     },
     height: {
       type: String,
@@ -41,6 +41,22 @@ export default {
     colorGroup: {
       type: Object,
       require: false,
+    }
+  },
+  mounted() {
+    this.getCurrentBooked(this.roomTitle);
+  },
+  methods: {
+    getCurrentBooked(room) {
+      const ref = this.$fire.firestore
+        .collection("rooms")
+        .doc(room)
+        .collection("2022-05-27")
+        .get()
+        .then(daySnapshot => {
+          this.data[0]["value"] = Object.keys(this.$store.state.time).length - daySnapshot.size;
+          this.data[2]["value"] = daySnapshot.size;
+        });
     }
   },
   // data () {

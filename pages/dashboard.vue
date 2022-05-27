@@ -113,20 +113,20 @@ export default {
       //   location: 'Guanghua Building'
       // },
       upcomingAppt: {
-          ref: null, 
-          start: null, 
+          ref: null,
+          start: null,
           end: null,
           room: null,
           month: null,
           day: null,
           year: null,
-      }, 
+      },
       pie1: {
-        roomTitle: 'Room #001',
+        roomTitle: 'GHB001',
         data: [
           {
             "group": "Available",
-            "value": 1
+            "value": 0
           },
           {
             "group": "Unavailable",
@@ -134,7 +134,7 @@ export default {
           },
           {
             "group": "In Use/Booked",
-            "value": 6
+            "value": 0
           },
         ],
         colorGroup: {
@@ -144,11 +144,11 @@ export default {
         }
       },
       pie2: {
-        roomTitle: 'Room #002',
+        roomTitle: 'GHB002',
         data: [
           {
             "group": "Available",
-            "value": 4
+            "value": 0
           },
           {
             "group": "Unavailable",
@@ -156,7 +156,7 @@ export default {
           },
           {
             "group": "In Use/Booked",
-            "value": 3
+            "value": 0
           },
         ],
         colorGroup: {
@@ -166,11 +166,11 @@ export default {
         }
       },
       pie3: {
-        roomTitle: 'Room #003',
+        roomTitle: 'GHB003',
         data: [
           {
             "group": "Available",
-            "value": 2
+            "value": 0
           },
           {
             "group": "Unavailable",
@@ -178,7 +178,7 @@ export default {
           },
           {
             "group": "In Use/Booked",
-            "value": 3
+            "value": 0
           },
         ],
         colorGroup: {
@@ -192,27 +192,27 @@ export default {
   created () {
     let today = new Date();
     let date = `${today.getFullYear()}-${today.getMonth()+1}-${today.getDate()}`
-    let time = new Date().toLocaleTimeString('en-US', { hour12: false, 
-                                          hour: "numeric", 
+    let time = new Date().toLocaleTimeString('en-US', { hour12: false,
+                                          hour: "numeric",
                                           minute: "numeric"});
 
-    // should retrieve upcoming (soonest) appointment 
+    // should retrieve upcoming (soonest) appointment
     const ref = this.$fire.firestore.collection("users").doc(this.$store.state.persisted.uid)
     ref.collection("bookings").get().then((ss)=>{ console.log(ss.docs.length )})
     // ref.collection("bookings").get().then((snapshot) => {
     //   if (snapshot.docs.length > 0) {
     //     snapshot.forEach(bookings => {
-    //       // ascending order 
+    //       // ascending order
     //       bookings.ref.collection("data").orderBy("start", "asc").get().then((snapshot) => {
     //         if (snapshot.docs.length > 0) {
     //           snapshot.forEach(booking => {
     //             if (booking.data().start.toDate().getTime() > today.getTime()) {
     //               this.upcomingAppt.ref = booking.ref.id;
-    //               this.upcomingAppt.start = booking.data().start.toDate().toLocaleTimeString('en-US', { hour12: false, 
-    //                                                                                       hour: "numeric", 
+    //               this.upcomingAppt.start = booking.data().start.toDate().toLocaleTimeString('en-US', { hour12: false,
+    //                                                                                       hour: "numeric",
     //                                                                                       minute: "numeric"});
-    //               this.upcomingAppt.end = booking.data().end.toDate().toLocaleTimeString('en-US', { hour12: false, 
-    //                                                                                       hour: "numeric", 
+    //               this.upcomingAppt.end = booking.data().end.toDate().toLocaleTimeString('en-US', { hour12: false,
+    //                                                                                       hour: "numeric",
     //                                                                                       minute: "numeric"});
     //               this.upcomingAppt.room = booking.data().room;
     //               this.upcomingAppt.month = booking.data().start.toDate().getMonth();
@@ -225,7 +225,7 @@ export default {
     //     })
     //   }
     // })
-    
+
                                           // .then((bookingsSnapshot) => {
                                           //   bookingsSnapshot.forEach(bookings => {
                                           //     // ascending order
@@ -236,14 +236,14 @@ export default {
                                           //     .get()
                                           //     .then((appts) => {
                                           //       appts.forEach((apptData) => {
-                                          //         const appt = apptData.data() 
+                                          //         const appt = apptData.data()
                                           //         this.upcomingAppt.start = appt.start;
-                                          //         this.upcomingAppt.end = appt.end; 
+                                          //         this.upcomingAppt.end = appt.end;
                                           //         this.upcomingAppt.room = appt.room;
 
                                           //         let month = new Date()
                                           //         month.setMonth(appt.month-1)
-                                          //         this.upcomingAppt.month = month.toLocaleString('en-US', {month: 'short'}); 
+                                          //         this.upcomingAppt.month = month.toLocaleString('en-US', {month: 'short'});
                                           //         this.upcomingAppt.day = appt.dayNumber;
                                           //         this.upcomingAppt.year = appt.year;
 
