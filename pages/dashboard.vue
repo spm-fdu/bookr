@@ -12,11 +12,11 @@
           <!-- if no appointments -->
           <v-row justify="center" v-if="upcomingAppt.day === null">
             <v-col>
-              <v-card-text class="text-button mt-16 mb-16 ml-8">no upcoming appointment</v-card-text>
+              <v-card-text class="text-button mt-16 mb-16 ml-8">Check manage tab</v-card-text>
             </v-col>
           </v-row>
           <!-- if there is appointment -->
-          <v-row justify="center" v-else>
+          <!-- <v-row justify="center" v-else>
             <v-col cols="4" class="pr-0 pb-0">
               <v-card elevation="0" style="height:100%" class="text-center justify-center align-center pt-8 pb-0">
                   <h1 class="font-weight-bold" style="font-size:2vw">{{ upcomingAppt.month }}</h1>
@@ -33,7 +33,7 @@
                 <v-card-subtitle class="text-overline">Time: {{ upcomingAppt.start }} - {{ upcomingAppt.end }}</v-card-subtitle>
               </v-card>
             </v-col>
-          </v-row>
+          </v-row> -->
         </v-card>
       </v-col>
       <!-- other room availability for today -->
@@ -65,7 +65,7 @@
     </v-row>
 
     <!--  -->
-    <v-row class="mt-16">
+    <!-- <v-row class="mt-16">
       <v-col>
         <v-card elevation="1">
           <v-card-title>
@@ -88,7 +88,7 @@
           </v-row>
         </v-card>
       </v-col>
-    </v-row>
+    </v-row> -->
   </v-container>
 </template>
 
