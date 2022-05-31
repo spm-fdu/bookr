@@ -121,7 +121,7 @@ export default {
     },
     disableCheckInButton (item) {
       let today = new Date();
-      let todate = today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + today.getDate();
+      let todate = today.getFullYear() + "-" + (today.getMonth() + 1).toString().padStart(2, "0") + "-" + today.getDate().toString().padStart(2, "0");
       let time = today.toLocaleTimeString('en-US', { hour12: false, hour: "numeric", minute: "numeric"});
 
       let bookingDate = item.date;
@@ -136,6 +136,11 @@ export default {
 
       let todaySeconds = todayArray[0] + todayArray[1];
       let bookingSeconds = bookingArray[0] + bookingArray[1];
+
+      console.log("todate", todate);
+      console.log("bookingdate", bookingDate);
+      console.log("today", todaySeconds);
+      console.log("booking", bookingSeconds);
 
       if (todate == bookingDate) {
         console.log("yes");
