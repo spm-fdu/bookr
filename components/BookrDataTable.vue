@@ -148,6 +148,7 @@ export default {
     },
     async editItem(item) {
       item.status = "cancelled";
+      console.log(item.date);
 
       const userUid = this.$fire.auth.currentUser.uid;
       const ref = await this.$fire.firestore
@@ -171,6 +172,7 @@ export default {
     },
     async deleteItem(item) {
       item.status = "cancelled";
+      console.log(item.date);
 
       const userUid = this.$fire.auth.currentUser.uid;
       const ref = await this.$fire.firestore
@@ -254,7 +256,7 @@ export default {
                     if (bookingDate >= todayDate) {
                       let newData = new Map(Object.entries(booking.data()));
 
-                      let date = newData.get("year") + "-" + newData.get("month") + "-" + newData.get("dayNumber");
+                      let date = newData.get("year") + "-" + newData.get("month").toString().padStart(2, "0") + "-" + newData.get("dayNumber").toString().padStart(2, "0");
                       newData.set("date", date);
                       newData.set("no", counter);
 
