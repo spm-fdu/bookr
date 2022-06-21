@@ -1,4 +1,4 @@
-# bookr
+# bookr for FDU SPM Project
 
 ## Build Setup
 
